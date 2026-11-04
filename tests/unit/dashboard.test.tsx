@@ -23,9 +23,13 @@ const report = (comment: string) => ({
   viewport: { width: 1280, height: 720 },
   element: { tag: 'button', selector: 'html > body > button:nth-of-type(1)' },
 });
+const originalStorage = Object.getOwnPropertyDescriptor(navigator, 'storage');
 
 afterEach(async () => {
   cleanup();
+  if (originalStorage)
+    Object.defineProperty(navigator, 'storage', originalStorage);
+  else Reflect.deleteProperty(navigator, 'storage');
   await closeDatabase();
   for (const database of await indexedDB.databases()) {
     if (database.name) {
@@ -39,6 +43,42 @@ afterEach(async () => {
 });
 
 describe('local feedback dashboard', () => {
+  it('shows local storage use when the browser provides an estimate', async () => {
+    Object.defineProperty(navigator, 'storage', {
+      configurable: true,
+      value: { estimate: async () => ({ usage: 1_500_000, quota: 5_000_000 }) },
+    });
+    render(<Dashboard />);
+
+    expect(
+      await screen.findByText(/1\.4 MB used locally/i),
+    ).toBeInTheDocument();
+  });
+
+  it('keeps report controls available if storage estimation fails', async () => {
+    await addReport(report('Still available after estimate failure'));
+    Object.defineProperty(navigator, 'storage', {
+      configurable: true,
+      value: { estimate: async () => Promise.reject(new Error('unavailable')) },
+    });
+    render(<Dashboard />);
+
+    expect(
+      await screen.findByText(/storage estimate unavailable/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        name: 'Still available after estimate failure',
+      }),
+    ).toBeInTheDocument();
+    await userEvent
+      .setup()
+      .click(screen.getByRole('button', { name: 'Delete report' }));
+    expect(
+      await screen.findByText(/your notes will appear here/i),
+    ).toBeInTheDocument();
+  });
+
   it('shows a useful empty state when no reports exist', async () => {
     render(<Dashboard />);
 

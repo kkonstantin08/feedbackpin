@@ -22,6 +22,12 @@ const formatDate = (time: number) =>
     hour: 'numeric',
     minute: '2-digit',
   }).format(time);
+const formatStorageUsage = (bytes?: number) =>
+  typeof bytes !== 'number' || !Number.isFinite(bytes) || bytes < 0
+    ? 'Storage estimate unavailable.'
+    : bytes >= 1024 * 1024
+      ? `${(bytes / (1024 * 1024)).toFixed(1)} MB used locally`
+      : `${Math.round(bytes / 1024)} KB used locally`;
 
 export function Dashboard() {
   const [reports, setReports] = useState<Report[]>([]);
@@ -30,6 +36,7 @@ export function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [storageUsage, setStorageUsage] = useState('Reading local storage…');
 
   useEffect(() => {
     let mounted = true;
@@ -50,6 +57,18 @@ export function Dashboard() {
       .finally(() => {
         if (mounted) setLoading(false);
       });
+    if (navigator.storage?.estimate) {
+      navigator.storage
+        .estimate()
+        .then(({ usage }) => {
+          if (mounted) setStorageUsage(formatStorageUsage(usage));
+        })
+        .catch(() => {
+          if (mounted) setStorageUsage(formatStorageUsage());
+        });
+    } else {
+      setStorageUsage(formatStorageUsage());
+    }
     const close = () => {
       void closeDatabase();
     };
@@ -192,7 +211,10 @@ export function Dashboard() {
           )}
           <footer className={styles.sidebarFoot}>
             ◈ &nbsp;Private by default
-            <small>Nothing leaves this browser.</small>
+            <div>
+              <small>Nothing leaves this browser.</small>
+              <small aria-live="polite">{storageUsage}</small>
+            </div>
           </footer>
         </aside>
         <section className={styles.detail} aria-label="Report details">
