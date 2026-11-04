@@ -66,11 +66,11 @@
 
 **Files:** create `src/content/selector.ts`, `src/content/overlay.ts`, `tests/unit/selector.test.ts`, `docs/tdd/selection.md`.
 
-- [ ] Write DOM tests for pointer highlight, click target capture, Escape cancellation, explicit cancel, repeated start rejection, and cleanup of host plus listeners after every exit.
-- [ ] Run tests and confirm RED for the expected missing behavior.
-- [ ] Implement a single temporary Shadow DOM host and one pointer, click, and keydown listener while active; highlight with a fixed overlay driven by `elementFromPoint()` and rect reads, not target-style mutation.
-- [ ] Run tests to GREEN; add a cleanup assertion that dispatching pointer/click/Escape after teardown causes no selector action.
-- [ ] Record RED/GREEN evidence and commit as `feat(extension): add on-demand element selection`.
+- [x] Write DOM tests for pointer highlight, click target capture, Escape cancellation, explicit cancel, repeated start rejection, and cleanup of host plus listeners after every exit.
+- [x] Run tests and confirm RED for the expected missing behavior.
+- [x] Implement a single temporary Shadow DOM host and one pointer, click, and keydown listener while active; highlight with a fixed overlay driven by `elementFromPoint()` and rect reads, not target-style mutation.
+- [x] Run tests to GREEN; add a cleanup assertion that dispatching pointer/click/Escape after teardown causes no selector action.
+- [x] Record RED/GREEN evidence and commit as `feat(extension): add on-demand element selection`.
 
 ## Task 4: Add user-triggered injection and restricted-page handling
 
