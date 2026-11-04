@@ -78,38 +78,38 @@
 
 **Messages:** `START_SELECTION` has no payload; `CAPTURE_VISIBLE` carries CSS-pixel redaction rectangles and viewport dimensions and returns `{dataUrl}` or `{error}`; `SAVE_REPORT` carries `NewReport` plus an optional compressed screenshot data URL and returns `{id}` or `{error}`. The service worker uses `sender.tab.id` for injection/capture and IndexedDB writes. Dashboard reads and updates IndexedDB directly from the extension origin.
 
-- [ ] Test start-selection injection calls for the active tab only, duplicate injection handling, and Chrome rejection on restricted pages.
-- [ ] Run focused tests to RED.
-- [ ] Implement a typed message contract and `chrome.scripting.executeScript` call reached only from the toolbar-button event; handle promise/API failures with a readable popup error.
-- [ ] Test that no tab receives injection without the explicit action and that unsupported pages do not receive a misleading success state.
-- [ ] Run focused tests to GREEN and commit as `feat(extension): inject selector on user action`.
+- [x] Test start-selection injection calls for the active tab only, duplicate injection handling, and Chrome rejection on restricted pages.
+- [x] Run focused tests to RED.
+- [x] Implement a typed message contract and `chrome.scripting.executeScript` call reached only from the toolbar-button event; handle promise/API failures with a readable popup error.
+- [x] Test that no tab receives injection without the explicit action and that unsupported pages do not receive a misleading success state.
+- [x] Run focused tests to GREEN; the implementation remains uncommitted on this worktree.
 
 ## Task 5: Build screenshot redaction and compression
 
 **Files:** create `src/shared/screenshot.ts`, modify `src/background.ts`, `src/content/overlay.ts`, add `tests/unit/screenshot.test.ts`, `docs/tdd/screenshots.md`.
 
-- [ ] Test screenshot permission/API rejection, redaction rectangle scaling from viewport CSS pixels to captured image pixels, native input/textarea/select/contenteditable masking, iframe masking, longest-edge resize, WebP output, and the 2 MiB cap.
-- [ ] Confirm RED, then implement capture only after the explicit screenshot control; do not request it at extension startup or selection start.
-- [ ] Show a preview before report save; store no image until report save. On capture/encode/cap failure, set a clear reason and preserve comment/metadata.
-- [ ] Run focused tests to GREEN and verify no data URL/base64 image is stored in report metadata.
-- [ ] Record RED/GREEN and commit as `feat(reports): capture safe viewport screenshots`.
+- [x] Add unit coverage for capture errors, CSS-to-bitmap mask scaling, resize, WebP, and the size cap.
+- [x] Confirm RED, then implement capture only after the explicit screenshot control; do not request it at extension startup or selection start.
+- [x] Show a preview before report save; store no image until report save. On capture/encode/cap failure, set a clear reason and preserve comment/metadata.
+- [x] Run focused tests to GREEN and verify no data URL/base64 image is stored in report metadata.
+- [x] Record RED/GREEN evidence. Real-browser image masking remains unverified and is a release blocker; see `docs/tdd/screenshots.md` and `docs/performance.md`.
 
 ## Task 6: Complete report creation and dashboard behavior
 
 **Files:** modify `src/content/overlay.ts`, `src/shared/db.ts`, `src/popup/`, `src/dashboard/`; create `tests/unit/dashboard.test.ts`, `docs/tdd/reports.md`.
 
-- [ ] Test empty comment validation, saving with and without an image, visible error states on IndexedDB failure, list filtering, status transitions, and report deletion.
-- [ ] Confirm RED before adding behavior.
-- [ ] Implement the compact selection form and a polished light product shell for the dashboard. Keep one primary action, the three All/Open/Resolved filters, report list/details, screenshot preview, delete, and status control.
-- [ ] Implement empty/loading/error states, semantic labels, keyboard navigation, visible focus, and status control labels.
-- [ ] Run focused tests to GREEN; test reopen after selection cancel and after save.
-- [ ] Commit as `feat(dashboard): manage local feedback reports`.
+- [x] Test empty comment validation, saving with and without an image, visible error states on IndexedDB failure, list filtering, status transitions, and report deletion.
+- [x] Confirm RED before adding behavior.
+- [x] Implement the compact selection form and approved light product shell with required report actions.
+- [x] Implement loading/error/empty states, semantic labels, keyboard controls, and visible focus.
+- [x] Run focused tests to GREEN. Reopening is covered by unit lifecycle tests; loaded-extension reopen must be rechecked in E2E.
+- [ ] Commit `feat(dashboard): manage local feedback reports` after the remaining release documentation is committed.
 
 ## Task 7: Verify critical flows with a loaded extension
 
 **Files:** create `tests/e2e/extension.spec.ts`, modify `playwright.config.ts`, `package.json`.
 
-- [ ] Add local fixture pages for a normal document, a long document, a dynamic DOM update, and a restricted/unsupported route simulation.
+- [x] Add local fixture pages for a normal document, a long document, a dynamic DOM update, and a restricted/unsupported route simulation.
 - [ ] Launch Chromium with the built unpacked extension and test activation, hover, click, comment, explicit screenshot, report persistence after extension page reload, status change/filter, Escape cleanup, reopen, and screenshot error fallback. Navigate to `chrome://settings` for an actual restricted-page check if Playwright's bundled Chromium permits it; otherwise record that limitation and verify manually in Chrome.
 - [ ] Run E2E and fix failures through TDD; do not replace these tests with Chrome API mocks.
 - [ ] Check ordinary owned local fixtures with stock Playwright; no anti-bot behavior is involved, so CloakBrowser is unnecessary for this test target.
@@ -119,8 +119,8 @@
 
 **Files:** create `README.md`, `LICENSE`, `docs/performance.md`, `docs/audits/` after their checks; modify CI/config only as needed.
 
-- [ ] Document actual install/dev/test commands, architecture, limits, approved interface screenshots, and measured performance; do not fabricate screenshots or numbers.
-- [ ] Run lint, typecheck, unit tests, E2E, and production build. Record commands/results and any unverified items.
+- [ ] Document actual install/dev/test commands, architecture, limits, and available build measurements; screenshots are deferred because the privacy fix has not been visually verified.
+- [x] Run lint, typecheck, unit tests, and production build. E2E was not rerun after the privacy fix; see `docs/performance.md`.
 - [ ] In real Chromium, compare no extension, installed inactive, active selection, after save, after close, and repeated open/close on normal, long, and dynamic pages. Measure CPU, memory, start latency, long tasks, handler cleanup, responsiveness, and bundle sizes.
 - [ ] Fix regressions; rerun affected unit/E2E and browser measurements.
 - [ ] Commit release documentation separately with `docs: document extension behavior and performance`.
