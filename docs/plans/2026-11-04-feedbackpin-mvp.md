@@ -54,13 +54,13 @@
 
 **Contract:** `Report` has `id`, `comment`, `createdAt`, `url`, `viewport:{width,height}`, `element:{tag,selector}`, `status:'open'|'resolved'`, optional `screenshot:Blob`, and optional `screenshotError:string`. `NewReport` carries the same user-entered metadata before `id` and `createdAt` are assigned.
 
-- [ ] Write tests that reject empty comments, strip query/hash from URLs, build a structural selector without text/attributes, and preserve the exact approved report field set.
-- [ ] Run the focused tests and record the expected RED failures.
-- [ ] Write persistence tests for add/read/list/status update/delete, including deleting the image with its report and handling quota/open/write errors.
-- [ ] Run the tests before implementation and record the expected RED failures.
-- [ ] Implement the smallest validators and native IndexedDB operations; do not add an ORM or storage library.
-- [ ] Run focused tests to GREEN, then related unit tests; record concise RED/GREEN evidence in `docs/tdd/storage.md`.
-- [ ] Commit as `feat(storage): persist local reports in indexeddb`.
+- [x] Write tests that reject empty comments, strip query/hash from URLs, build a structural selector without text/attributes, and preserve the exact approved report field set.
+- [x] Run the focused tests and record the expected RED failures.
+- [x] Write persistence tests for add/read/list/status update/delete, including deleting the image with its report and handling quota/open/write errors.
+- [x] Run the tests before implementation and record the expected RED failures.
+- [x] Implement the smallest validators and native IndexedDB operations; do not add an ORM or storage library.
+- [x] Run focused tests to GREEN, then related unit tests; record concise RED/GREEN evidence in `docs/tdd/storage.md`.
+- [x] Commit as `feat(storage): persist local reports in indexeddb`.
 
 ## Task 3: Implement on-demand selection lifecycle
 
