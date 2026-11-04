@@ -4,7 +4,7 @@
 Build a small local-first Chrome MV3 extension for element-anchored visual bug reports. The browser must remain idle until the user starts selection.
 
 ## Stack and architecture
-Use strict TypeScript, React only in extension pages, Vite, MV3, Chrome APIs, DOM APIs, Vitest/Testing Library, and Playwright. Inject a small content script only after an explicit toolbar action. Keep the service worker event-driven; use IndexedDB for local report data and screenshot blobs. No backend, external analytics, broad host permissions, persistent page scripts, polling, or global observers.
+Use strict TypeScript, React only in extension pages, Vite, MV3, Chrome APIs, DOM APIs, Vitest/Testing Library, and Playwright. Inject a small content script only after an explicit toolbar action. Keep the service worker event-driven and use IndexedDB for local report data. Screenshot capture is disabled by user decision; preserve legacy image data and never create new images. No backend, external analytics, broad host permissions, persistent page scripts, polling, or global observers.
 
 ## Product and visual rules
 Keep the approved Userback-inspired product-shell direction documented in `docs/research/design-reference-directions.md` and `docs/specs/feedbackpin-mvp.md`. Do not change it without user approval. Keep the on-page selector visually quiet. Local-first and privacy-first; never store typed field values.

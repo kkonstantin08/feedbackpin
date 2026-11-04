@@ -1,21 +1,21 @@
 # FeedbackPin
 
-FeedbackPin is a local-first Chrome extension for leaving visual bug reports on the page element that needs attention. A report keeps a short comment, a safe element path, a sanitized URL, viewport dimensions, and an optional screenshot in the current browser profile.
+FeedbackPin is a local-first Chrome extension for leaving structured bug notes on the page element that needs attention. A report keeps a short comment, a safe element path, a sanitized URL, and viewport dimensions in the current browser profile.
 
 ## What it does
 
 - Starts element selection only after you open the extension and choose **Select an element**.
 - Adds a quiet highlight and compact note form to the current page.
-- Captures the visible area only when you press the screenshot button.
-- Masks rows containing visible inputs, editable regions, and iframes to prevent field values from leaking when screenshot and page coordinates differ.
-- Keeps a note without an image when Chrome cannot capture or encode a screenshot.
+- Disables screenshots because late on-demand injection cannot guarantee detection of every closed ShadowRoot and could capture private field values.
+- Explains the screenshot limitation in the note form and saves text-only reports.
 - Stores reports in IndexedDB on the extension device. The dashboard filters open and resolved notes and lets you change status or delete a report.
+- Shows approximate local storage usage when Chrome provides it; estimate errors do not block report management.
 
 FeedbackPin has no account, backend, network reporting, analytics, or team workspace. It is a focused handoff tool, not a project tracker.
 
 ## Screenshots
 
-Product screenshots are not included yet. The prior browser capture showed a redaction offset, so those images were discarded. The screenshot path now masks the full horizontal row for sensitive page regions; a fresh visual capture is deferred until browser verification can run without overloading the development machine.
+Product screenshots are not included. Screenshot capture is disabled in the MVP to protect private page data.
 
 ## Install in Chrome
 
@@ -41,15 +41,14 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-`npm run dev` serves the local fixtures and extension source for development. `npm run test:e2e` builds and loads a temporary copy of the extension in Chromium. That test copy adds permissions required to automate local pages and screenshots; the generated production manifest is separately checked to contain only `activeTab` and `scripting`.
+`npm run dev` serves the local fixtures and extension source for development. `npm run test:e2e` builds and loads a temporary copy of the extension in Chromium. That test copy adds permissions required to automate local pages; the generated production manifest is separately checked to contain only `activeTab` and `scripting`.
 
 ## Architecture
 
-- `src/background.ts` is an event-driven MV3 service worker. It injects the selector after the popup action, captures on explicit request, and writes validated reports.
+- `src/background.ts` is an event-driven MV3 service worker. It injects the selector after the popup action and writes validated text reports.
 - `src/content/` is a small plain TypeScript script with a temporary Shadow DOM overlay. It is not registered for page load and does not use React.
 - `src/popup/` and `src/dashboard/` are React extension pages.
-- `src/shared/db.ts` stores reports and optional WebP blobs in IndexedDB.
-- `src/shared/screenshot.ts` resizes images to a maximum edge of 1600 px and a maximum stored size of 2 MiB.
+- `src/shared/db.ts` stores reports in IndexedDB and preserves image blobs from earlier development builds.
 
 The manifest guard also checks that the injected selector is a self-contained script, with no runtime module import.
 
@@ -57,8 +56,8 @@ The manifest guard also checks that the injected selector is a self-contained sc
 
 - Comments and reports remain in the current browser profile until deleted.
 - Page field values, DOM text, arbitrary attributes, URL query strings, and URL fragments are not stored as report metadata.
-- Visible input, textarea, select, editable, and iframe regions cause a full-width horizontal mask in the screenshot. This hides more surrounding page content than a tight rectangle, while tolerating screenshot coordinate offsets.
-- Screenshots are optional and require an explicit capture action and a later save action.
+- No page screenshot is captured or stored for new reports. The explicit privacy decision removes capture API, redaction, and image-processing work from the product.
+- Images saved by earlier local development builds are preserved and remain visible in their existing report until the user deletes that report.
 - Element paths are structural hints and may become stale when a site changes its DOM.
 - There is no cloud sync, collaboration, authentication, or automatic retention cleanup.
 

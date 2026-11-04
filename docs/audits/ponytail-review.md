@@ -1,6 +1,6 @@
 # Ponytail review
 
-What this change does: FeedbackPin injects its selector only after the popup action, captures a visible screenshot only after an explicit request, and stores local reports in IndexedDB. React is limited to the popup and dashboard; the injected selector is a standalone bundle.
+What this change does: FeedbackPin injects its selector only after the popup action and stores text-only local reports in IndexedDB. Screenshot capture is disabled by the user's privacy decision. React is limited to the popup and dashboard; the injected selector is a standalone bundle.
 
 **Must fix:**
 
@@ -19,3 +19,13 @@ What this change does: FeedbackPin injects its selector only after the popup act
 **Not checked:** Loaded-extension E2E after the mask correction, real Chrome screenshot pixels, CPU/memory, long tasks, and UI behavior in narrow windows. No browser was started for this review.
 
 Verdict: Fix 1 and 2 before release.
+
+## Follow-up
+
+The dashboard storage estimate is implemented, and its success, failure, listing, and deletion behavior have unit coverage. Sensitive controls in open ShadowRoots are masked; screenshots are refused for custom elements with no exposed shadow root, preserving text-only notes.
+
+**Resolved by product decision:** A closed ShadowRoot attached to a standard HTML element remains undetectable after on-demand injection. The user chose to disable screenshots; the capture message, Chrome capture handler, image processing, and capture UI are removed. Unexpected image payloads are dropped before report persistence.
+
+**Not checked:** Real-browser redaction, E2E after the correction, runtime performance, memory, long tasks, and narrow-window UI. No browser was started.
+
+Verdict: Text-only privacy path is implemented. Runtime performance remains unmeasured and blocks a performance claim.
