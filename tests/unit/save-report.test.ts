@@ -31,7 +31,7 @@ function worker() {
         }),
       },
     },
-    tabs: { query: vi.fn(), captureVisibleTab: vi.fn() },
+    tabs: { query: vi.fn() },
     scripting: { executeScript: vi.fn() },
   } as unknown as typeof chrome;
   registerBackground(api);
@@ -62,12 +62,16 @@ afterEach(async () => {
 });
 
 describe('saving a report from the injected form', () => {
-  it('stores sanitized metadata and an optional WebP image blob', async () => {
+  it('stores sanitized text metadata without persisting image payloads', async () => {
     const app = worker();
     const response = await app.send({
       ...payload,
       screenshotDataUrl: `data:image/webp;base64,${btoa('RIFF\u0000\u0000\u0000\u0000WEBP image')}`,
-    });
+      report: {
+        ...payload.report,
+        screenshot: new Blob(['private image'], { type: 'image/webp' }),
+      },
+    } as unknown as SaveReportMessage);
 
     expect(response).toMatchObject({ id: expect.any(String) });
     const [saved] = await getReports();
@@ -75,35 +79,9 @@ describe('saving a report from the injected form', () => {
       comment: 'Broken button',
       url: 'https://example.test/page',
       status: 'open',
-      screenshot: expect.anything(),
     });
+    expect(saved?.screenshot).toBeUndefined();
     expect(saved?.screenshotError).toBeUndefined();
-  });
-
-  it('keeps a valid text note when image data is invalid', async () => {
-    const app = worker();
-    await app.send({
-      ...payload,
-      screenshotDataUrl: 'data:image/png;base64,AAAA',
-    });
-    const [saved] = await getReports();
-
-    expect(saved?.comment).toBe('Broken button');
-    expect(saved?.screenshot).toBeUndefined();
-    expect(saved?.screenshotError).toMatch(/image/i);
-  });
-
-  it('keeps text when the screenshot exceeds the storage cap', async () => {
-    const app = worker();
-    await app.send({
-      ...payload,
-      screenshotDataUrl: `data:image/webp;base64,${'A'.repeat(2_800_000)}`,
-    });
-    const [saved] = await getReports();
-
-    expect(saved?.comment).toBe('Broken button');
-    expect(saved?.screenshot).toBeUndefined();
-    expect(saved?.screenshotError).toMatch(/2 MiB/i);
   });
 
   it('rejects an empty comment without writing a record', async () => {

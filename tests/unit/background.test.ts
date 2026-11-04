@@ -22,7 +22,6 @@ function setup(tabId: number | null = 8) {
       return [] as never;
     },
   );
-  const captureVisibleTab = vi.fn(async () => 'data:image/png;base64,AAAA');
   const api = {
     runtime: {
       id: 'extension-id',
@@ -36,7 +35,6 @@ function setup(tabId: number | null = 8) {
       query: vi.fn(async () =>
         tabId === null ? [] : [{ id: tabId, windowId: 2 }],
       ),
-      captureVisibleTab,
     },
     scripting: { executeScript },
   } as unknown as typeof chrome;
@@ -51,7 +49,7 @@ function setup(tabId: number | null = 8) {
       const keepChannelOpen = listener?.(message, fromSender, resolve);
       if (!keepChannelOpen) resolve(undefined);
     });
-  return { api, executeScript, captureVisibleTab, send, sender };
+  return { api, executeScript, send, sender };
 }
 
 describe('user-triggered selector injection', () => {
@@ -131,61 +129,19 @@ describe('user-triggered selector injection', () => {
     expect(response).not.toHaveBeenCalled();
   });
 
-  it('captures the active page only after an explicit content-script request', async () => {
-    const { api, captureVisibleTab, send, sender } = setup();
-    const pageSender = {
-      ...sender,
-      url: 'https://example.test/page',
-    } as chrome.runtime.MessageSender;
-    expect(captureVisibleTab).not.toHaveBeenCalled();
-    await expect(
-      send(
-        {
-          type: 'CAPTURE_VISIBLE',
-          rectangles: [],
-          viewport: { width: 1280, height: 720 },
-        },
-        pageSender,
-      ),
-    ).resolves.toEqual({ dataUrl: 'data:image/png;base64,AAAA' });
-    expect(api.tabs.query).toHaveBeenCalledWith({ active: true, windowId: 2 });
-    expect(captureVisibleTab).toHaveBeenCalledWith(2, { format: 'png' });
-  });
-
-  it('rejects capture requests from extension pages and handles Chrome capture errors', async () => {
-    const rejectedSender = setup();
-    const listener = vi.mocked(rejectedSender.api.runtime.onMessage.addListener)
-      .mock.calls[0]?.[0] as Listener;
+  it('does not register a page-capture message handler', async () => {
+    const { api, sender, send } = setup();
+    const listener = vi.mocked(api.runtime.onMessage.addListener).mock
+      .calls[0]?.[0] as Listener;
     const response = vi.fn();
     expect(
       listener(
-        {
-          type: 'CAPTURE_VISIBLE',
-          rectangles: [],
-          viewport: { width: 1, height: 1 },
-        },
-        rejectedSender.sender,
+        { type: 'CAPTURE_VISIBLE' },
+        { ...sender, url: 'https://example.test/' },
         response,
       ),
     ).toBeUndefined();
-    expect(rejectedSender.captureVisibleTab).not.toHaveBeenCalled();
-
-    const unavailable = setup();
-    vi.mocked(unavailable.captureVisibleTab).mockRejectedValueOnce(
-      new Error('Capture failed'),
-    );
-    await expect(
-      unavailable.send(
-        {
-          type: 'CAPTURE_VISIBLE',
-          rectangles: [],
-          viewport: { width: 1, height: 1 },
-        },
-        {
-          ...unavailable.sender,
-          url: 'https://example.test/',
-        } as chrome.runtime.MessageSender,
-      ),
-    ).resolves.toMatchObject({ error: expect.stringMatching(/screenshot/i) });
+    await expect(send({ type: 'CAPTURE_VISIBLE' })).resolves.toBeUndefined();
+    expect(response).not.toHaveBeenCalled();
   });
 });

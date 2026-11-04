@@ -60,11 +60,9 @@ async function beginSelection() {
   return popup;
 }
 
-test('captures, redacts, saves, reloads, filters, resolves, and deletes a report', async () => {
+test('explains screenshot privacy, saves, reloads, filters, resolves, and deletes a note', async () => {
   await page.goto(normalUrl);
   expect(await page.locator('[data-feedbackpin-host]').count()).toBe(0);
-  const inputRect = await page.locator('#secret').boundingBox();
-  expect(inputRect).not.toBeNull();
 
   await beginSelection();
   const target = page.locator('#target');
@@ -88,9 +86,9 @@ test('captures, redacts, saves, reloads, filters, resolves, and deletes a report
   ).toBe(0);
   const comment = page.getByRole('textbox', { name: /what needs attention/i });
   await comment.fill('Checkout button overlaps the account details.');
-  await page.getByRole('button', { name: /capture visible area/i }).click();
-  const preview = page.getByRole('img', { name: 'Screenshot preview' });
-  await expect(preview).toHaveAttribute('src', /^data:image\/webp;base64,/);
+  await expect(
+    page.getByText(/screenshots are disabled for privacy/i),
+  ).toBeVisible();
   await page.getByRole('button', { name: 'Save note' }).click();
   await expect(page.locator('[data-feedbackpin-host]')).toHaveCount(0);
 
@@ -122,12 +120,10 @@ test('captures, redacts, saves, reloads, filters, resolves, and deletes a report
     );
     database.close();
     const report = reports[0];
-    const image = report?.screenshot as Blob | undefined;
     return {
       url: report?.url,
-      viewport: report?.viewport as { width: number; height: number },
       serializedReport: JSON.stringify(report),
-      screenshot: image ? { type: image.type, size: image.size } : undefined,
+      screenshot: report?.screenshot,
     };
   });
   expect(saved?.url).toBe('http://127.0.0.1:4173/tests/fixtures/normal.html');
@@ -135,45 +131,7 @@ test('captures, redacts, saves, reloads, filters, resolves, and deletes a report
   expect(saved?.serializedReport).not.toContain(
     'sensitive-value-not-for-storage',
   );
-  expect(saved?.screenshot).toBeTruthy();
-  expect(saved?.screenshot).toMatchObject({ type: 'image/webp' });
-  expect((saved?.screenshot as { size: number }).size).toBeGreaterThan(0);
-
-  const screenshotPixels = await dashboard
-    .getByRole('img', { name: 'Saved screenshot of the visible page' })
-    .evaluate(
-      (
-        image,
-        {
-          box,
-          viewport,
-        }: {
-          box: { x: number; y: number; width: number; height: number };
-          viewport: { width: number; height: number };
-        },
-      ) => {
-        const img = image as HTMLImageElement;
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const context = canvas.getContext('2d')!;
-        context.drawImage(img, 0, 0);
-        const rect = {
-          x: (box.x + box.width / 2) * (canvas.width / viewport.width),
-          y: (box.y + box.height / 2) * (canvas.height / viewport.height),
-        };
-        const pixel = context.getImageData(rect.x, rect.y, 1, 1).data;
-        return {
-          width: canvas.width,
-          height: canvas.height,
-          maskedPixel: Array.from(pixel),
-        };
-      },
-      { box: inputRect!, viewport: saved!.viewport },
-    );
-  expect(screenshotPixels.width).toBeGreaterThan(0);
-  expect(screenshotPixels.height).toBeGreaterThan(0);
-  expect(screenshotPixels.maskedPixel.slice(0, 3)).toEqual([0, 0, 0]);
+  expect(saved?.screenshot).toBeUndefined();
 
   await dashboard.getByRole('button', { name: 'Mark as resolved' }).click();
   await expect(
