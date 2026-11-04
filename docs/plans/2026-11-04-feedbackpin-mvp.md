@@ -103,7 +103,7 @@
 - [x] Implement the compact selection form and approved light product shell with required report actions.
 - [x] Implement loading/error/empty states, semantic labels, keyboard controls, and visible focus.
 - [x] Run focused tests to GREEN. Reopening is covered by unit lifecycle tests; loaded-extension reopen must be rechecked in E2E.
-- [ ] Commit `feat(dashboard): manage local feedback reports` after the remaining release documentation is committed.
+- [x] Commit the complete local reporting workflow as `feat(extension): complete local reporting workflow`.
 
 ## Task 7: Verify critical flows with a loaded extension
 
@@ -119,11 +119,11 @@
 
 **Files:** create `README.md`, `LICENSE`, `docs/performance.md`, `docs/audits/` after their checks; modify CI/config only as needed.
 
-- [ ] Document actual install/dev/test commands, architecture, limits, and available build measurements; screenshots are deferred because the privacy fix has not been visually verified.
+- [x] Document actual install/dev/test commands, architecture, limits, and available build measurements; screenshots are deferred because the privacy fix has not been visually verified.
 - [x] Run lint, typecheck, unit tests, and production build. E2E was not rerun after the privacy fix; see `docs/performance.md`.
 - [ ] In real Chromium, compare no extension, installed inactive, active selection, after save, after close, and repeated open/close on normal, long, and dynamic pages. Measure CPU, memory, start latency, long tasks, handler cleanup, responsiveness, and bundle sizes.
 - [ ] Fix regressions; rerun affected unit/E2E and browser measurements.
-- [ ] Commit release documentation separately with `docs: document extension behavior and performance`.
+- [x] Commit release documentation separately with `docs: record implementation and verification limits`.
 
 ## Task 9: Independent final audit and publication
 
