@@ -11,9 +11,9 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit && tsc --project tsconfig.node.json --noEmit",
-    "test": "vitest run --passWithNoTests",
+    "test": "vitest run",
     "check:build": "node scripts/check-build.mjs",
-    "test:e2e": "npm run build && playwright test --pass-with-no-tests",
+    "test:e2e": "npm run build && node scripts/prepare-e2e-extension.mjs && FEEDBACKPIN_EXTENSION_PATH=.e2e-extension playwright test",
     "build": "vite build && npm run check:build"
   },
   "dependencies": {

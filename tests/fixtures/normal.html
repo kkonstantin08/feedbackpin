@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FeedbackPin fixture</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 40px;
+        font: 16px system-ui;
+        color: #25242d;
+        background: #f7f6fa;
+      }
+      main {
+        max-width: 680px;
+        margin: auto;
+        padding: 32px;
+        border: 1px solid #e5e3eb;
+        border-radius: 12px;
+        background: white;
+      }
+      button {
+        padding: 12px 18px;
+        border: 0;
+        border-radius: 7px;
+        color: white;
+        background: #6554c0;
+      }
+      input {
+        display: block;
+        width: 280px;
+        margin: 20px 0;
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Example checkout</h1>
+      <label for="secret">Account reference</label>
+      <input id="secret" value="sensitive-value-not-for-storage" />
+      <button id="target" onclick="window.pageClicks++">
+        Continue checkout
+      </button>
+      <p>Page text must not be included in a report.</p>
+    </main>
+    <script>
+      window.pageClicks = 0;
+    </script>
+  </body>
+</html>

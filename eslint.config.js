@@ -10,6 +10,7 @@ export default tseslint.config(
       'coverage/**',
       'playwright-report/**',
       'test-results/**',
+      '.e2e-extension/**',
       '.superpowers/**',
     ],
   },

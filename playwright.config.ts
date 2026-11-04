@@ -6,10 +6,18 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
   workers: 1,
+  timeout: 90_000,
+  expect: { timeout: 10_000 },
+  reporter: 'list',
   use: {
     browserName: 'chromium',
-    channel: 'chromium',
-    headless: true,
+    headless: false,
     trace: 'retain-on-failure',
+  },
+  webServer: {
+    command: 'npm run dev -- --host 127.0.0.1 --port 4173',
+    url: 'http://127.0.0.1:4173/tests/fixtures/normal.html',
+    reuseExistingServer: !process.env.CI,
+    timeout: 30_000,
   },
 });
