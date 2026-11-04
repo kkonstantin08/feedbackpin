@@ -1,6 +1,6 @@
 # FeedbackPin MVP — product and technical specification
 
-**Status:** design direction approved; MVP specification prepared 2026-11-04 and awaiting user review. It becomes the implementation contract after approval.
+**Status:** design direction and MVP specification approved by the user on 2026-11-04; this is the implementation contract.
 
 ## Product intent
 

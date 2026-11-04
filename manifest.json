@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "FeedbackPin",
+  "version": "0.1.0",
+  "description": "Local-first visual bug reports anchored to page elements.",
+  "permissions": ["activeTab", "scripting"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_popup": "src/popup/index.html" },
+  "options_page": "src/dashboard/index.html"
+}

@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+package-lock.json
+.superpowers/
+docs/plans/
+docs/research/
+docs/specs/
+AGENTS.md

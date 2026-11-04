@@ -40,13 +40,13 @@
 
 **Files:** create `package.json`, lockfile, `manifest.json`, `vite.config.ts`, `tsconfig.json`, `tsconfig.node.json`, `vitest.config.ts`, `playwright.config.ts`, `index.html`, `src/background.ts`, `src/popup/index.html`, `src/popup/main.tsx`, `src/dashboard/index.html`, `src/dashboard/main.tsx`, `.gitignore`, `.github/workflows/ci.yml`.
 
-- [ ] Create a strict TypeScript Vite project with only the required runtime dependencies React and React DOM; add Vitest, Testing Library, Playwright, fake-indexeddb (test-only), ESLint, and Prettier as development tools.
-- [ ] Initialize git after the user approves this plan; create the authorized public GitHub repository `feedbackpin`, add its remote, and verify GitHub reports the repository as public before pushing source.
-- [ ] Define an MV3 manifest with `activeTab` and `scripting`, an event-driven service worker, popup, and dashboard page; do not define content-script matches or `host_permissions`.
-- [ ] Add a build assertion that the generated manifest points at existing artifacts and has no content-script registration or unexpected permissions.
-- [ ] Run that assertion and verify it fails before the build artifact exists, then run it after build and verify it passes.
-- [ ] Add ESLint and Prettier configuration and CI commands for lint, typecheck, unit tests, E2E tests, and production build; E2E should run the built extension in local Chromium with no external service.
-- [ ] Commit as `chore: scaffold mv3 extension project`.
+- [x] Create a strict TypeScript Vite project with only the required runtime dependencies React and React DOM; add `@types/chrome`, Vitest, Testing Library, Playwright, fake-indexeddb (test-only), ESLint, and Prettier as development tools.
+- [x] Initialize git, create the authorized public GitHub repository `feedbackpin`, add its remote, and verify GitHub reports it as public. The docs-only baseline is pushed to `main`.
+- [x] Define an MV3 manifest with `activeTab` and `scripting`, an event-driven service worker, popup, and dashboard page; do not define content-script matches or `host_permissions`.
+- [x] Add a build assertion that the generated manifest points at existing artifacts and has no content-script registration or unexpected permissions.
+- [x] Run that assertion and verify it fails before the build artifact exists, then run it after build and verify it passes.
+- [x] Add ESLint and Prettier configuration and CI commands for lint, typecheck, unit tests, E2E tests, and production build; E2E should run the built extension in local Chromium with no external service.
+- [x] Commit as `chore: scaffold mv3 extension project`.
 
 ## Task 2: Define report contract and IndexedDB persistence
 
@@ -110,7 +110,7 @@
 **Files:** create `tests/e2e/extension.spec.ts`, modify `playwright.config.ts`, `package.json`.
 
 - [ ] Add local fixture pages for a normal document, a long document, a dynamic DOM update, and a restricted/unsupported route simulation.
-- [ ] Launch Chromium with the built unpacked extension and test activation, hover, click, comment, explicit screenshot, report persistence after extension page reload, status change/filter, Escape cleanup, reopen, and screenshot error fallback.
+- [ ] Launch Chromium with the built unpacked extension and test activation, hover, click, comment, explicit screenshot, report persistence after extension page reload, status change/filter, Escape cleanup, reopen, and screenshot error fallback. Navigate to `chrome://settings` for an actual restricted-page check if Playwright's bundled Chromium permits it; otherwise record that limitation and verify manually in Chrome.
 - [ ] Run E2E and fix failures through TDD; do not replace these tests with Chrome API mocks.
 - [ ] Check ordinary owned local fixtures with stock Playwright; no anti-bot behavior is involved, so CloakBrowser is unnecessary for this test target.
 - [ ] Commit as `test(extension): cover loaded-extension workflows`.
@@ -138,4 +138,4 @@
 
 ## Handoff
 
-This plan does not authorize implementation before the user reviews the Stage B specification and plan. After review, choose inline execution or the required subagent-driven workflow; do not exceed two concurrent subagents.
+The user approved the Stage B specification and plan, then authorized implementation. Execute inline unless a task needs independent work; keep concurrent subagents at or below two.
