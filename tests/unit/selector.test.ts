@@ -25,7 +25,7 @@ beforeEach(() => {
 
 describe('on-demand element selection', () => {
   it('highlights the element under the pointer and selects it on click', () => {
-    const target = document.querySelector('#target')!;
+    const target = document.querySelector<HTMLButtonElement>('#target')!;
     setTargetAtPointer(target);
     const onSelect = vi.fn();
     startSelection({ onSelect, onCancel: vi.fn() });
@@ -42,6 +42,7 @@ describe('on-demand element selection', () => {
     const click = new MouseEvent('click', {
       bubbles: true,
       cancelable: true,
+      detail: 1,
       clientX: 40,
       clientY: 30,
     });
@@ -84,5 +85,21 @@ describe('on-demand element selection', () => {
     session.cancel();
     expect(onCancel).toHaveBeenCalledOnce();
     expect(document.querySelector('[data-feedbackpin-host]')).toBeNull();
+  });
+
+  it('uses the keyboard-activated element instead of a pointer coordinate', () => {
+    const target = document.querySelector<HTMLButtonElement>('#target')!;
+    const wrong = document.createElement('aside');
+    document.body.append(wrong);
+    Object.defineProperty(document, 'elementFromPoint', {
+      configurable: true,
+      value: () => wrong,
+    });
+    const onSelect = vi.fn();
+    startSelection({ onSelect, onCancel: vi.fn() });
+
+    target.click();
+
+    expect(onSelect).toHaveBeenCalledWith(target);
   });
 });

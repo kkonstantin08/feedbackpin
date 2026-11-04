@@ -16,6 +16,18 @@ describe('report privacy and validation', () => {
     ).toThrow(/comment/i);
   });
 
+  it('rejects malformed messages instead of throwing an incidental TypeError', () => {
+    expect(() => createReport(undefined as never)).toThrow(/report data/i);
+    expect(() =>
+      createReport({
+        comment: 42,
+        url: 'https://example.test',
+        viewport: { width: 1280, height: 720 },
+        element: { tag: 'button', selector: 'button:nth-of-type(1)' },
+      } as never),
+    ).toThrow(/comment/i);
+  });
+
   it('stores only the approved fields and removes URL query and fragment', () => {
     const report = createReport({
       comment: '  Broken button  ',

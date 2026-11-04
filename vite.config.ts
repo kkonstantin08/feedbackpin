@@ -22,7 +22,6 @@ export default defineConfig({
   build: {
     rolldownOptions: {
       input: {
-        index: fileURLToPath(new URL('./index.html', import.meta.url)),
         popup: fileURLToPath(
           new URL('./src/popup/index.html', import.meta.url),
         ),
@@ -32,12 +31,17 @@ export default defineConfig({
         background: fileURLToPath(
           new URL('./src/background.ts', import.meta.url),
         ),
+        selector: fileURLToPath(
+          new URL('./src/content/entry.ts', import.meta.url),
+        ),
       },
       output: {
         entryFileNames: (entry) =>
           entry.name === 'background'
             ? 'background.js'
-            : 'assets/[name]-[hash].js',
+            : entry.name === 'selector'
+              ? 'content/selector.js'
+              : 'assets/[name]-[hash].js',
       },
     },
   },

@@ -33,4 +33,13 @@ for (const artifact of [
     `Missing artifact: ${artifact}`,
   );
 }
+assert.ok(
+  (await stat(path.join(output, 'content/selector.js'))).isFile(),
+  'Missing on-demand selector bundle',
+);
+assert.doesNotMatch(
+  await readFile(path.join(output, 'content/selector.js'), 'utf8'),
+  /^\s*import(?:\s|[{*])/m,
+  'Injected selector must be a self-contained classic script',
+);
 console.log('MV3 build assertion passed.');

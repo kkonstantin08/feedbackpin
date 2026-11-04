@@ -24,6 +24,13 @@ export interface Report extends NewReport {
 }
 
 export function createReport(input: NewReport): Report {
+  if (!input || typeof input !== 'object')
+    throw new Error('Report data is invalid.');
+  if (typeof input.comment !== 'string')
+    throw new Error('Comment must be text.');
+  if (typeof input.url !== 'string') throw new Error('Page URL is invalid.');
+  if (!input.viewport || !input.element)
+    throw new Error('Report data is incomplete.');
   const comment = input.comment.trim();
   if (!comment) throw new Error('Comment cannot be empty.');
   const url = new URL(input.url);
@@ -42,6 +49,8 @@ export function createReport(input: NewReport): Report {
     throw new Error('Viewport dimensions must be positive integers.');
   }
   if (
+    typeof input.element.tag !== 'string' ||
+    typeof input.element.selector !== 'string' ||
     !/^[a-z][a-z\d-]*$/i.test(input.element.tag) ||
     !input.element.selector.trim()
   ) {

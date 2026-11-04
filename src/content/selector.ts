@@ -51,10 +51,10 @@ export function startSelection(
   };
   const onClick = (event: MouseEvent) => {
     if (event.composedPath().includes(host)) return;
-    const underPointer = document.elementFromPoint(
-      event.clientX,
-      event.clientY,
-    );
+    const underPointer =
+      event.detail > 0
+        ? document.elementFromPoint(event.clientX, event.clientY)
+        : null;
     const target =
       underPointer && !host.contains(underPointer)
         ? underPointer
