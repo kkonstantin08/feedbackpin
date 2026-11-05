@@ -73,3 +73,45 @@ The primary agent pushed the reviewed branch and GitHub Actions run `41916953384
 The primary agent verified the repository reports `PUBLIC` with `gh repo view`, and GitHub resolved branch `feat/mvp-impl` to `664d75aa7a7eb40099bd5d5be344ba28c32562c7`. These checks establish that the public repository and branch are reachable at that revision.
 
 The audit scope above remains an independent static code review; the post-audit CI and GitHub checks are additional evidence, not findings from the auditor. Real-browser performance acceptance remains open.
+
+## Independent final audit — GPT-6 Luna High — 2026-11-05 — `579f306`
+
+This is a fresh review of the current revision, independent of the findings recorded above. I read `AGENTS.md`, the approved MVP spec and design direction, README, performance report, implementation plan, TDD records, current source, unit/E2E/performance test source, CI configuration, audit history, and commits through `579f306`. I did not change product code and did not run local tests, Chromium, Playwright, or other browser automation. The only browser evidence used is the authorized remote GitHub Actions runs below.
+
+### Finding
+
+#### [P2] Shared report creation API still persists new screenshot blobs
+
+- **Location:** `src/shared/report.ts:11-20,60-73`; `src/shared/db.ts:80-87`; `tests/unit/db.test.ts:34-62`
+- **Violation/evidence:** The approved privacy contract says no code path may persist image data from a new report. The current popup-to-worker route does whitelist `comment`, `url`, `viewport`, and `element` in `src/background.ts:95-97`, and `tests/unit/save-report.test.ts:64-85` confirms that unexpected image properties sent to that handler are dropped. However, the shared `NewReport` type still includes `screenshot` and `screenshotError`, `createReport()` copies both into a new record, and exported `addReport()` persists that record. The DB unit tests explicitly call `addReport()` with a Blob and assert that the new image is restored. Thus the message boundary is protected, but the shared storage API and its contract still permit new screenshot writes; the tests currently preserve the superseded behavior.
+- **Remediation:** Make the creation input and `createReport()` text-only, ignoring unexpected image fields at that boundary. Keep legacy-image fields only on the persisted/read `Report` model so old IndexedDB records remain viewable and deletable. Replace the DB tests that create new image-bearing records with tests that seed a legacy record directly in IndexedDB, verify it remains readable/deletable, and verify `addReport()` drops an unexpected image payload.
+- **Confirming test:** A unit test passing an unexpected `screenshot: Blob` to `addReport()` must assert the newly stored report has no `screenshot` or `screenshotError`; separate legacy fixture tests must confirm existing image records are still returned and can be deleted.
+
+The finding is limited to the shared write API: the current user-facing form and worker message handler do not send or persist new images. It is still a privacy-contract gap because the exported DB creation path and its tests allow a future or alternate caller to bypass that filter.
+
+### Independently confirmed requirements
+
+- **MV3 and permissions:** `manifest.json` is MV3 and requests exactly `activeTab` and `scripting`; it has no `content_scripts` or host permissions. `scripts/check-build.mjs` checks the built manifest and standalone selector. `tsconfig.json` enables strict checks, `noUncheckedIndexedAccess`, and `exactOptionalPropertyTypes`.
+- **Idle until action / cleanup:** the service worker only responds to the popup's validated `START_SELECTION` message and injects the selector then. `src/content/selector.ts` has only temporary pointer, click, and Escape listeners and removes them and the host through one cleanup path. Source search found no product polling, `MutationObserver`, interval, tab capture API, or network request. Test-fixture timers are confined to the dynamic React fixture.
+- **Privacy / local storage:** the current overlay states that screenshots are disabled and has no capture action. The worker saves only the four allowed report inputs. URL and structural-selector sanitization remain in `createReport()`. IndexedDB operations report open/read/write/update/delete errors; old screenshot records remain readable and deletable as specified. `navigator.storage.estimate()` is optional and does not block report management on failure.
+- **Accessibility and design:** labels, dialog heading, initial textarea focus, Escape/Cancel paths, visible `:focus-visible` styles, and semantic dashboard controls are present in source. Narrow-layout CSS breakpoints are present. I inspected the remote-CI-generated popup and dashboard PNGs: they show the approved light, purple-accented product shell with a quiet selector direction. Actual narrow-window rendering was not verified.
+- **Tests and process:** current CI has 33 unit tests, three functional loaded-extension scenarios (ordinary, long, dynamic, restricted-page and repeated cancel/reopen behavior), one performance scenario, and one remote README screenshot scenario. TDD records include RED/GREEN evidence for privacy removal and the storage estimate. Commit messages through `579f306` follow English Conventional Commit form. README, MIT license, and CI workflow are present.
+- **Public repository:** `gh repo view` reports `kkonstantin08/feedbackpin` as `PUBLIC`. The audited source is on public `feat/mvp-impl` at `579f306`; remote `main` still points to the earlier docs-only `102ad63`, so the implementation is not yet on the repository's default branch.
+
+### Remote CI and performance evidence
+
+- Run [41982856728](https://github.com/kkonstantin08/feedbackpin/actions/runs/41982856728) completed successfully on source commit `b302b8a` with Chromium `156.0.8078.4`: lint, typecheck, 33 unit tests, all five loaded-extension E2E tests, raw performance artifact upload, and production build passed. I independently inspected its job logs and raw JSON artifact at `/tmp/feedbackpin-ci-41982856728/feedbackpin-performance-b302b8ab268571cd0361429a59497fdca728fb9c/performance-results/feedbackpin-performance.json`.
+- Run [41983397793](https://github.com/kkonstantin08/feedbackpin/actions/runs/41983397793) completed successfully for current documentation revision `579f306`; all job steps passed, including lint, typecheck, 33 unit tests, five loaded-extension E2E tests, performance artifact upload, and build. This remote CI is the permitted real-browser evidence for the current revision; no browser was run locally.
+- The raw JSON contains 16 samples and 33 selector-start latencies (median `41.6 ms`, maximum `66.5 ms`). I recomputed the documented state means from the raw samples: no-extension CPU/RSS `2.33%`/`976.0 MiB`; installed-inactive `2.99%`/`1,090.6 MiB`; selection-active `4.15%`/`1,163.6 MiB`; after save `0.50%`/`1,174.5 MiB`; after close `1.25%`/`1,180.3 MiB`; ten open/close cycles `4.49%`/`1,199.3 MiB`; and 35-second quiet `0.49%`/`1,154.5 MiB`. GPU CPU, page-task maxima, and zero long-task counts also match the documentation. The aggregate RSS deltas are approximately `+115 MiB` installed-inactive and `+223 MiB` after ten cycles relative to the no-extension mean.
+- These are short sequential measurements on a 4-vCPU, 15,984-MiB GitHub Linux runner, not a laptop benchmark or attribution of all Chrome RSS to FeedbackPin. The quiet sample is only on the dynamic React fixture. It does not prove natural service-worker termination.
+- Run `41982361259` failed after the 35-second interval solely on the invalid expectation that Playwright's service-worker handle list had become empty. The corrected follow-up removed that disappearance assertion while retaining the quiet CPU/RSS/page-activity sample; `41982856728` passed. Natural MV3 worker termination remains **unverified**, as the performance report says.
+
+### Remaining risks and scope limits
+
+- The P2 shared-storage image-write gap above remains open; legacy image compatibility itself is intentional.
+- Narrow-window UI and extended real-world behavior were **NOT CHECKED** in a real browser. Responsive rules exist in CSS, but remote screenshots are desktop dimensions.
+- Performance results do not establish impact on the user's laptop. Natural worker suspension remains unverified.
+- `main` remains at the docs-only baseline; if the expected public landing branch is `main`, the audited implementation still needs to reach it.
+- I did not inspect private local IndexedDB data, install the extension on the user's Chrome profile, or run local commands/tests.
+
+This independent audit is not full release approval. Remote CI covers the current source flow, but the shared storage API finding and stated scope limits remain.
