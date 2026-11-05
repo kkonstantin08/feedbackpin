@@ -120,6 +120,7 @@ test('MV3 service worker stops after its idle timeout without debugger attachmen
     >();
     const targets = new Map<string, Target>();
     const destroyed = new Set<string>();
+    const destroyedAt = new Map<string, number>();
     const destroyedWaiters = new Map<string, () => void>();
     let targetAvailable: (() => void) | undefined;
     socket.addEventListener('message', (event) => {
@@ -145,6 +146,7 @@ test('MV3 service worker stops after its idle timeout without debugger attachmen
         message.params?.targetId
       ) {
         destroyed.add(message.params.targetId);
+        destroyedAt.set(message.params.targetId, performance.now());
         destroyedWaiters.get(message.params.targetId)?.();
       }
     });
@@ -180,6 +182,7 @@ test('MV3 service worker stops after its idle timeout without debugger attachmen
 
     const worker = targets.values().next().value as Target | undefined;
     expect(worker?.url).toMatch(/^chrome-extension:\/\//);
+    const observedAt = performance.now();
     const termination = worker
       ? new Promise<void>((resolve) => {
           if (destroyed.has(worker.targetId)) resolve();
@@ -189,6 +192,13 @@ test('MV3 service worker stops after its idle timeout without debugger attachmen
     await expect(
       withTimeout(termination, 60_000, 'MV3 service worker stayed active.'),
     ).resolves.toBeUndefined();
+    const idleDurationMs = destroyedAt.get(worker!.targetId)! - observedAt;
+    expect(idleDurationMs).toBeGreaterThan(25_000);
+    expect(idleDurationMs).toBeLessThan(60_000);
+    console.log(
+      'FEEDBACKPIN_WORKER_STOPPED_AFTER_MS',
+      Math.round(idleDurationMs),
+    );
   } finally {
     socket?.close();
     await stopChrome(chrome);
