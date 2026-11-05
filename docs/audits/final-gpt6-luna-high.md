@@ -165,3 +165,9 @@ No new findings in the reviewed scope. The earlier shared-storage P2 is already 
 - Remote E2E validates the 390 px dashboard width assertion, not every browser/device viewport, zoom level, or manual interaction. The remote runtime data is a compact CI comparison and is not a release guarantee for other machines.
 - GitHub confirms the repository is public. The reviewed `4c11272` commit is on `feat/mvp-impl`; default branch `main` was at `6d995de` when checked, so it does not include this lifecycle-test commit or the pending local documentation edits.
 - This follow-up is an independent review of the current commit plus local documentation diff, not full release approval. A CI run for the eventual documentation commit remains separate evidence.
+
+## Publication follow-up — primary agent — 2026-11-05
+
+After the independent review, GitHub Actions run [41989139531](https://github.com/kkonstantin08/feedbackpin/actions/runs/41989139531) passed for commit `76427bf21fe855ccc129125c3166032e588a1860`, including lint, strict typecheck, 33 unit tests, six E2E scenarios, performance artifact upload, and production build. The primary agent fast-forwarded public `main` to that exact commit. GitHub API verification returned repository visibility `public`, default branch `main`, and `main` SHA `76427bf21fe855ccc129125c3166032e588a1860`.
+
+This publication record itself is a documentation-only follow-up and is not covered by run `41989139531`; its CI result will be recorded after that revision is checked.
