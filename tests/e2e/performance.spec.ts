@@ -383,14 +383,13 @@ test('records comparable browser impact across idle and active states', async ()
       results.push(
         await sample(
           fixture.name,
-          'after-35s-idle',
+          'after-35s-quiet',
           page,
           pageSession,
           browserSession,
           IDLE_SETTLE_MS,
         ),
       );
-      expect(context.serviceWorkers()).toHaveLength(0);
     }
     await pageSession.detach();
     await browserSession.detach();

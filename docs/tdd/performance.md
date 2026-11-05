@@ -2,7 +2,7 @@
 
 ## Acceptance criteria
 
-- Remote Chromium samples no extension, installed idle, active selection, report save/close, and ten repeated open/close cycles across ordinary, long, and dynamic React fixtures. A final 35-second idle interval checks that the MV3 worker naturally stops and measures browser activity after its idle timeout.
+- Remote Chromium samples no extension, installed idle, active selection, report save/close, and ten repeated open/close cycles across ordinary, long, and dynamic React fixtures. A final 35-second quiet interval measures browser activity after selection cleanup; it does not assert service worker termination because Playwright exposes an inspected worker handle.
 - Each runtime sample lasts two seconds and records aggregate Chrome CPU/RSS split by process type, GPU-process CPU/RSS when present, page task/script time, page heap after GC and after the sample, and long tasks. Selector start latency is recorded for 33 activations.
 - The run stores its raw JSON as a short-lived GitHub Actions artifact. No browser runs on the user's laptop.
 - Unit tests verify selection and form listeners are removed on close, in addition to checking that closed tools no longer react.
@@ -15,4 +15,5 @@
 - Remote run `41980073610` passed all 5 loaded-extension E2E tests, including the headless image capture. Both authentic UI screenshots were downloaded from its CI artifact and checked into the README assets. The next performance run adds heap readings before and after explicit GC to distinguish retained page objects from browser RSS caching.
 - The current acceptance asserts that post-GC page heap after ten open/close cycles stays within 1 MiB of the installed-idle heap for each fixture. This threshold is above the prior three-cycle readings (0.5–0.6 MiB); verify it on the remote runner.
 - The 10-cycle run passed with heap deltas below 1 MiB, but aggregate Chrome RSS was about 108 MiB higher than the no-extension baseline while idle and 210–220 MiB higher after interactions. Process breakdown attributed most of the increase to renderer RSS (+~100 MiB when installed idle, +~180–190 MiB after interactions). A 35-second idle interval will check natural MV3 worker suspension and settled resource use; do not interpret aggregate RSS alone as an extension memory leak.
+- RED: remote run `41982361259` passed the three functional E2E scenarios, but the performance test failed after its 35-second quiet interval because Playwright still reported one service-worker handle. Chrome's extension docs note that inspecting a service worker keeps it active, so the Playwright handle is not a valid natural-shutdown assertion. GREEN: retain the 35-second CPU/RSS/page-activity sample, name it `after-35s-quiet`, and record worker termination as unverified by this harness.
 - Playwright is intentionally not run on the user's laptop.
