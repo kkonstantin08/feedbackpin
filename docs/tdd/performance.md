@@ -3,7 +3,7 @@
 ## Acceptance criteria
 
 - Remote Chromium samples no extension, installed idle, active selection, report save/close, and ten repeated open/close cycles across ordinary, long, and dynamic React fixtures. A final 35-second quiet interval measures browser activity after selection cleanup; it does not assert service worker termination because Playwright exposes an inspected worker handle.
-- Each runtime sample lasts two seconds and records aggregate Chrome CPU/RSS split by process type, GPU-process CPU/RSS when present, page task/script time, page heap after GC and after the sample, and long tasks. Selector start latency is recorded for 33 activations.
+- Regular runtime samples last two seconds; the final quiet sample lasts 35 seconds. They record aggregate Chrome CPU/RSS split by process type, GPU-process CPU/RSS when present, page task/script time, page heap after GC and after the sample, and long tasks. Selector start latency is recorded for 33 activations.
 - The run stores its raw JSON as a short-lived GitHub Actions artifact. No browser runs on the user's laptop.
 - Unit tests verify selection and form listeners are removed on close, in addition to checking that closed tools no longer react.
 

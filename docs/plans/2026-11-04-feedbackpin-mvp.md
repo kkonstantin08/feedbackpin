@@ -119,9 +119,9 @@
 **Files:** create `README.md`, `LICENSE`, `docs/performance.md`, `docs/audits/` after their checks; modify CI/config only as needed.
 
 - [x] Document actual install/dev/test commands, architecture, limits, and available build measurements; screenshots are disabled by user choice to protect privacy.
-- [x] Run lint, typecheck, unit tests, loaded-extension E2E, and production build. E2E ran in remote GitHub Actions run `41916953384`; performance measurements remain outstanding.
-- [ ] On the remote GitHub Actions runner only, compare no extension, installed inactive, active selection, after save/close, and repeated open/close on normal, long, and dynamic pages. Measure CPU, memory, start latency, long tasks, page task time, and bundle sizes. Do not run a browser on the user's laptop.
-- [ ] Fix regressions; rerun affected unit/E2E and browser measurements.
+- [x] Run lint, typecheck, 33 unit tests, loaded-extension E2E, and production build. Latest remote run: `41982856728`.
+- [x] On the remote GitHub Actions runner only, compare no extension, installed inactive, active selection, after save/close, and repeated open/close on ordinary, long, and dynamic pages. Record CPU, memory, start latency, long tasks, page task time, and bundle sizes in `docs/performance.md`. Do not run a browser on the user's laptop.
+- [x] Fix the invalid Playwright worker-disappearance assertion; rerun lint, typecheck, unit, E2E, performance, and build checks. Natural MV3 worker suspension remains unverified because the harness observes the worker.
 - [x] Commit release documentation separately with `docs: record implementation and verification limits`.
 
 ## Task 9: Independent final audit and publication

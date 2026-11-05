@@ -67,7 +67,7 @@ The manifest guard also checks that the injected selector is a self-contained sc
 
 ## Performance
 
-The implementation keeps page code absent until selection starts and removes its temporary listeners when selection closes. Production bundle sizes and the unmeasured browser-performance matrix are recorded in [docs/performance.md](docs/performance.md). CPU, memory, long-task, responsiveness, and repeated-open measurements are not claimed until they can be collected safely in Chromium.
+The implementation keeps page code absent until selection starts and removes its temporary listeners when selection closes. A sequential Chromium run in remote GitHub Actions measured CPU, process RSS, selector startup, page tasks, and repeated open/close cycles; conditions, numbers, and limits are in [docs/performance.md](docs/performance.md). These hosted-runner results do not predict the user's laptop's resource use.
 
 ## Project records
 
