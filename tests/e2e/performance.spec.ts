@@ -17,6 +17,7 @@ const extensionPath = path.resolve(
   process.env.FEEDBACKPIN_EXTENSION_PATH ?? 'dist',
 );
 const SAMPLE_MS = 2_000;
+const IDLE_SETTLE_MS = 35_000;
 const pages = [
   {
     name: 'ordinary',
@@ -119,6 +120,7 @@ async function sample(
   page: Page,
   pageSession: CDPSession,
   browserSession: CDPSession,
+  durationMs = SAMPLE_MS,
 ): Promise<Measurement> {
   await pageSession.send('HeapProfiler.collectGarbage');
   const [beforeBrowser, beforeMetrics, beforeLongTasks] = await Promise.all([
@@ -131,8 +133,8 @@ async function sample(
     ),
   ]);
   const started = performance.now();
-  await page.waitForTimeout(SAMPLE_MS);
-  const durationMs = performance.now() - started;
+  await page.waitForTimeout(durationMs);
+  const elapsedMs = performance.now() - started;
   const [afterBrowser, afterMetrics, longTasks] = await Promise.all([
     processSnapshot(browserSession),
     pageSession.send('Performance.getMetrics'),
@@ -162,14 +164,14 @@ async function sample(
   return {
     page: pageName,
     state,
-    durationMs: Math.round(durationMs),
+    durationMs: Math.round(elapsedMs),
     browserCpuMs: Math.round(cpuMs),
-    browserCpuPercentOneCore: Number(((cpuMs / durationMs) * 100).toFixed(2)),
+    browserCpuPercentOneCore: Number(((cpuMs / elapsedMs) * 100).toFixed(2)),
     browserRssMiB: Number(afterBrowser.rssMiB.toFixed(1)),
     processRssMiBByType: afterBrowser.rssMiBByType,
     gpuProcessCount: afterBrowser.gpuProcessCount,
     gpuCpuMs: Number(gpuCpuMs.toFixed(2)),
-    gpuCpuPercentOneCore: Number(((gpuCpuMs / durationMs) * 100).toFixed(2)),
+    gpuCpuPercentOneCore: Number(((gpuCpuMs / elapsedMs) * 100).toFixed(2)),
     gpuRssMiB: Number(afterBrowser.gpuRssMiB.toFixed(1)),
     pageTaskMs: Number(pageTaskMs.toFixed(2)),
     pageScriptMs: Number(
@@ -230,6 +232,7 @@ async function activateSelection(
 }
 
 test('records comparable browser impact across idle and active states', async () => {
+  test.setTimeout(120_000);
   const results: Measurement[] = [];
   const startLatencies: number[] = [];
   let browserVersion = '';
@@ -376,6 +379,19 @@ test('records comparable browser impact across idle and active states', async ()
         browserSession,
       ),
     );
+    if (fixture.name === 'dynamic-react') {
+      results.push(
+        await sample(
+          fixture.name,
+          'after-35s-idle',
+          page,
+          pageSession,
+          browserSession,
+          IDLE_SETTLE_MS,
+        ),
+      );
+      expect(context.serviceWorkers()).toHaveLength(0);
+    }
     await pageSession.detach();
     await browserSession.detach();
     await context.close();
@@ -413,7 +429,7 @@ test('records comparable browser impact across idle and active states', async ()
     `${JSON.stringify(report, null, 2)}\n`,
   );
   console.log('FEEDBACKPIN_PERFORMANCE', JSON.stringify(report));
-  expect(results).toHaveLength(15);
+  expect(results).toHaveLength(16);
   expect(results.every((entry) => entry.browserRssMiB > 0)).toBe(true);
   expect(results.every((entry) => entry.browserCpuPercentOneCore >= 0)).toBe(
     true,
