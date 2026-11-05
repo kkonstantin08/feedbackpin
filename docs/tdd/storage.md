@@ -10,4 +10,4 @@ Acceptance: new reports contain only approved text metadata, omit URL query/hash
 ## Text-only report write boundary
 
 - RED: a DB regression test failed because `addReport()` persisted a synthetic screenshot Blob.
-- GREEN: new-report types and creation now omit both image fields; a seeded legacy IndexedDB report still reads and updates its image, then deletes normally. The focused DB suite passes 3/3, full unit suite 33/33, lint, typecheck, and build pass locally. Loaded-extension CI is pending; no local browser was run.
+- GREEN: new-report types and creation now omit both image fields; a seeded legacy IndexedDB report still reads and updates its image, then deletes normally. The focused DB suite passes 3/3, full unit suite 33/33, lint, typecheck, and build pass locally. Remote run `41984496619` passed all five loaded-extension E2E scenarios after this fix; no local browser was run.

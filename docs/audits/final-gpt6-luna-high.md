@@ -115,3 +115,29 @@ The finding is limited to the shared write API: the current user-facing form and
 - I did not inspect private local IndexedDB data, install the extension on the user's Chrome profile, or run local commands/tests.
 
 This independent audit is not full release approval. Remote CI covers the current source flow, but the shared storage API finding and stated scope limits remain.
+
+## Follow-up audit — GPT-6 Luna High — 2026-11-05 — `bf1963a`
+
+I re-reviewed only the prior P2 data-write surface: the diff and all `createReport()`/`addReport()` callers, the report models, `tests/unit/db.test.ts`, related report/save tests, and the current TDD notes. No product code was changed, and I did not run local tests or any browser. I independently inspected remote run [41984496619](https://github.com/kkonstantin08/feedbackpin/actions/runs/41984496619) for `bf1963a`.
+
+### Prior P2 — resolved
+
+- `NewReport` at `src/shared/report.ts:11-16` no longer contains image fields. `Report` separately retains optional `screenshot` and `screenshotError` fields for legacy records (`:18-24`). `createReport()` explicitly constructs only its approved report metadata (`:60-72`) and no longer copies unrecognized image properties.
+- The production callers of `addReport()` are the service-worker save handler, which selects only `comment`, `url`, `viewport`, and `element` (`src/background.ts:91-97`), and dashboard test fixtures. The shared writer calls the explicit-field `createReport()` (`src/shared/db.ts:80-87`); an unexpected screenshot payload can no longer reach an IndexedDB write through this API.
+- `tests/unit/db.test.ts:58-71` passes an unexpected Blob and `screenshotError` through `addReport()` and asserts neither property is present after readback. Lines 73-97 seed a legacy report directly, verify its image/error are readable, verify status update preserves the image, and then delete the full record.
+- `docs/tdd/reports.md` and `docs/tdd/storage.md` record RED when the new Blob regression failed against the old behavior, followed by GREEN for text-only creation and legacy read/update/delete compatibility. The focused DB suite is recorded as 3/3.
+- Remote Actions run `41984496619` completed successfully on `bf1963a`. Its logs show lint, typecheck, 33/33 unit tests, all five loaded-extension E2E scenarios, performance artifact upload, and production build passed. This auditor did not rerun any of them locally.
+
+I found no remaining bypass on the reviewed `createReport()`/`addReport()` surface: even an untyped extra `screenshot` property is not copied into the new report object. Legacy blobs remain readable and status updates preserve them as required. **The prior P2 is resolved at `bf1963a`.**
+
+### Retained limitations
+
+- Natural MV3 service-worker termination remains unverified; the remote measurement harness observes a worker handle. This follow-up did not rerun or expand the performance audit.
+- Narrow-window UI, extended real-world laptop performance, and private local IndexedDB contents were not checked in this follow-up.
+- The implementation remains on public `feat/mvp-impl`; remote `main` was previously observed at the docs-only baseline. Confirm branch expectations separately before treating the default branch as the release branch.
+
+This targeted follow-up closes the P2 finding; it does not constitute broader release approval.
+
+## Publication follow-up — primary agent — 2026-11-05
+
+After the independent follow-up, the primary agent fast-forwarded public `main` from `102ad63` to the audited product revision `bf1963a` (`git push origin origin/feat/mvp-impl:refs/heads/main`). GitHub API verification returned `bf1963a062903692d91d11014118ece0ce403227`; `gh repo view` still reports the repository as `PUBLIC` with `main` as its default branch. This publication step postdates the auditor's source review; the audited source SHA is unchanged.
