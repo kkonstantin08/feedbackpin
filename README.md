@@ -15,7 +15,11 @@ FeedbackPin has no account, backend, network reporting, analytics, or team works
 
 ## Screenshots
 
-Product screenshots are not included. Screenshot capture is disabled in the MVP to protect private page data.
+![FeedbackPin popup](docs/assets/popup.png)
+
+![FeedbackPin dashboard with a sample note](docs/assets/dashboard.png)
+
+These are real screenshots of the built extension using a synthetic local fixture in remote CI. The product itself does not capture page screenshots; the dashboard shows a note without an image for privacy.
 
 ## Install in Chrome
 
