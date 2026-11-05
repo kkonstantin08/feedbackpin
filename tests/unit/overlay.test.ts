@@ -71,4 +71,28 @@ describe('on-page report form', () => {
     expect(second.host.isConnected).toBe(false);
     expect(second.onSave).not.toHaveBeenCalled();
   });
+
+  it('removes its temporary key, submit, and cancel listeners when closed', () => {
+    const documentRemove = vi.spyOn(document, 'removeEventListener');
+    const formRemove = vi.spyOn(
+      HTMLFormElement.prototype,
+      'removeEventListener',
+    );
+    const buttonRemove = vi.spyOn(
+      HTMLButtonElement.prototype,
+      'removeEventListener',
+    );
+    const { host } = openForm();
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect(documentRemove).toHaveBeenCalledWith(
+      'keydown',
+      expect.any(Function),
+      true,
+    );
+    expect(formRemove).toHaveBeenCalledWith('submit', expect.any(Function));
+    expect(buttonRemove).toHaveBeenCalledWith('click', expect.any(Function));
+    expect(host.isConnected).toBe(false);
+  });
 });

@@ -87,6 +87,21 @@ describe('on-demand element selection', () => {
     expect(document.querySelector('[data-feedbackpin-host]')).toBeNull();
   });
 
+  it('removes every temporary document listener when selection is cancelled', () => {
+    const removed = vi.spyOn(document, 'removeEventListener');
+    const session = startSelection({ onSelect: vi.fn(), onCancel: vi.fn() });
+
+    session.cancel();
+
+    expect(removed).toHaveBeenCalledWith(
+      'pointermove',
+      expect.any(Function),
+      true,
+    );
+    expect(removed).toHaveBeenCalledWith('click', expect.any(Function), true);
+    expect(removed).toHaveBeenCalledWith('keydown', expect.any(Function), true);
+  });
+
   it('uses the keyboard-activated element instead of a pointer coordinate', () => {
     const target = document.querySelector<HTMLButtonElement>('#target')!;
     const wrong = document.createElement('aside');

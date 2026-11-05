@@ -4,6 +4,8 @@ dist/
 coverage/
 playwright-report/
 test-results/
+performance-results/
+.artifacts/
 *.tsbuildinfo
 .DS_Store
 .env

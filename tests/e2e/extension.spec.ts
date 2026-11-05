@@ -6,7 +6,7 @@ import {
   type Page,
   type Worker,
 } from '@playwright/test';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -44,6 +44,7 @@ test.beforeEach(async () => {
   page = await context.newPage();
   popup = await context.newPage();
   await popup.goto(`chrome-extension://${extensionId}/src/popup/index.html`);
+  await popup.setViewportSize({ width: 360, height: 420 });
 });
 
 test.afterEach(async () => {
@@ -61,6 +62,9 @@ async function beginSelection() {
 }
 
 test('explains screenshot privacy, saves, reloads, filters, resolves, and deletes a note', async () => {
+  const screenshotDir = path.resolve('.artifacts/readme');
+  await mkdir(screenshotDir, { recursive: true });
+  await popup.screenshot({ path: path.join(screenshotDir, 'popup.png') });
   await page.goto(normalUrl);
   expect(await page.locator('[data-feedbackpin-host]').count()).toBe(0);
 
@@ -96,6 +100,20 @@ test('explains screenshot privacy, saves, reloads, filters, resolves, and delete
   await dashboard.goto(
     `chrome-extension://${extensionId}/src/dashboard/index.html`,
   );
+  await expect(
+    dashboard.getByRole('heading', {
+      name: 'Checkout button overlaps the account details.',
+    }),
+  ).toBeVisible();
+  await dashboard.setViewportSize({ width: 1440, height: 920 });
+  await dashboard.screenshot({
+    path: path.join(screenshotDir, 'dashboard.png'),
+    fullPage: true,
+  });
+  await dashboard.setViewportSize({ width: 390, height: 844 });
+  expect(
+    await dashboard.evaluate(() => document.documentElement.scrollWidth),
+  ).toBeLessThanOrEqual(390);
   await expect(
     dashboard.getByRole('heading', {
       name: 'Checkout button overlaps the account details.',

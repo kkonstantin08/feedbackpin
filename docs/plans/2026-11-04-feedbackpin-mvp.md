@@ -109,18 +109,18 @@
 **Files:** create `tests/e2e/extension.spec.ts`, modify `playwright.config.ts`, `package.json`.
 
 - [x] Add local fixture pages for a normal document, a long document, a dynamic DOM update, and a restricted/unsupported route simulation.
-- [ ] Launch Chromium with the built unpacked extension and test activation, hover, click, text-only save, report persistence after extension page reload, status change/filter, Escape cleanup, reopen, and the screenshot-disabled notice. Navigate to `chrome://settings` for an actual restricted-page check if Playwright's bundled Chromium permits it; otherwise record that limitation and verify manually in Chrome.
-- [ ] Run E2E and fix failures through TDD; do not replace these tests with Chrome API mocks.
-- [ ] Check ordinary owned local fixtures with stock Playwright; no anti-bot behavior is involved, so CloakBrowser is unnecessary for this test target.
-- [ ] Commit as `test(extension): cover loaded-extension workflows`.
+- [x] Launch Chromium with the built unpacked extension and test activation, hover, click, text-only save, report persistence after extension page reload, status change/filter, Escape cleanup, reopen, the screenshot-disabled notice, and restricted-page handling in remote CI. No browser was launched on the user's laptop.
+- [x] Run E2E and fix failures through TDD; no Chrome API mocks replace the loaded-extension tests.
+- [x] Check ordinary owned local fixtures with stock Playwright; no anti-bot behavior is involved, so CloakBrowser was unnecessary.
+- [x] Commit as `test(extension): cover loaded-extension workflows` (`82143c6`). Current remote CI run `41916953384` passed all 3 scenarios.
 
 ## Task 8: Release readiness evidence
 
 **Files:** create `README.md`, `LICENSE`, `docs/performance.md`, `docs/audits/` after their checks; modify CI/config only as needed.
 
 - [x] Document actual install/dev/test commands, architecture, limits, and available build measurements; screenshots are disabled by user choice to protect privacy.
-- [x] Run lint, typecheck, unit tests, and production build. E2E was not rerun after screenshot capture was removed; see `docs/performance.md`.
-- [ ] In real Chromium, compare no extension, installed inactive, active selection, after save, after close, and repeated open/close on normal, long, and dynamic pages. Measure CPU, memory, start latency, long tasks, handler cleanup, responsiveness, and bundle sizes.
+- [x] Run lint, typecheck, unit tests, loaded-extension E2E, and production build. E2E ran in remote GitHub Actions run `41916953384`; performance measurements remain outstanding.
+- [ ] On the remote GitHub Actions runner only, compare no extension, installed inactive, active selection, after save/close, and repeated open/close on normal, long, and dynamic pages. Measure CPU, memory, start latency, long tasks, page task time, and bundle sizes. Do not run a browser on the user's laptop.
 - [ ] Fix regressions; rerun affected unit/E2E and browser measurements.
 - [x] Commit release documentation separately with `docs: record implementation and verification limits`.
 
@@ -128,12 +128,12 @@
 
 **Files:** create `docs/audits/final-gpt6-luna-high.md`; publish the reviewed source and release evidence to the public `feedbackpin` repository.
 
-- [ ] After all primary checks pass, dispatch one independent audit subagent with exact model `gpt-6-luna` and reasoning effort `high`; keep total active subagents at or below two.
-- [ ] Provide the original user requirements, `AGENTS.md`, approved research/design direction, MVP spec, source, tests, build evidence, performance report, commit history, and README.
-- [ ] Require findings to name severity, exact file/location, violated requirement, fix, and confirming test; write the independent findings and their scope to `docs/audits/final-gpt6-luna-high.md`.
-- [ ] Fix findings and rerun corresponding tests, measurements, and audit checks; do not claim an item passed without evidence.
-- [ ] Scan tracked files for credentials/private data, review the final git diff, push Conventional Commit history, and verify the public GitHub URL loads the expected repository.
-- [ ] Commit the audit separately as `docs: record independent final audit`.
+- [x] After primary local checks passed, dispatch an independent audit subagent with exact model `gpt-6-luna` and reasoning effort `high`; concurrency stayed below the limit.
+- [x] Provide the original requirements, `AGENTS.md`, approved design/spec, source, tests, build/performance evidence, commit history, and README.
+- [x] Require severity, exact location, violation, fix, confirming tests, and unchecked scope; save the independent report at `docs/audits/final-gpt6-luna-high.md`.
+- [x] Resolve the two findings: disable screenshot capture for privacy and add the optional local storage estimate. Rerun focused RED/GREEN, 31 unit tests, lint, typecheck, and build; remote CI later passed all 3 E2E scenarios.
+- [x] Scan tracked content for common credential patterns, review diffs, push Conventional Commit history, and verify the public repository and branch on GitHub.
+- [x] Commit the independent audit separately as `docs: record independent final audit` (`664d75a`).
 
 ## Handoff
 

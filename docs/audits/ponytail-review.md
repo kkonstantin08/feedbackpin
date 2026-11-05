@@ -26,6 +26,6 @@ The dashboard storage estimate is implemented, and its success, failure, listing
 
 **Resolved by product decision:** A closed ShadowRoot attached to a standard HTML element remains undetectable after on-demand injection. The user chose to disable screenshots; the capture message, Chrome capture handler, image processing, and capture UI are removed. Unexpected image payloads are dropped before report persistence.
 
-**Not checked:** Real-browser redaction, E2E after the correction, runtime performance, memory, long tasks, and narrow-window UI. No browser was started.
+**Not checked:** Screenshot redaction is out of scope because screenshot capture is disabled. GitHub Actions run `41916953384` passed 3/3 loaded-extension E2E tests on a remote runner; runtime performance, memory, long tasks, and narrow-window UI remain unmeasured.
 
 Verdict: Text-only privacy path is implemented. Runtime performance remains unmeasured and blocks a performance claim.

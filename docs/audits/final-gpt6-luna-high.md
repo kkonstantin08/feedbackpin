@@ -64,4 +64,12 @@ Resolve the sensitive-field Shadow DOM gap and storage-usage omission, then run 
 - Chrome screenshot pixels are no longer applicable to new reports because capture is absent; historical local images remain outside this audit's inspection.
 - Public GitHub visibility/reachability remains **NOT CHECKED** by this follow-up.
 
-This follow-up closes the screenshot-capture and storage-estimate findings for new product behavior, but it is not full release approval. E2E and real-browser performance acceptance remain outstanding under the user's no-browser instruction.
+This follow-up closes the screenshot-capture and storage-estimate findings for new product behavior, but it is not full release approval. At the time of the follow-up, E2E had not run; the later remote CI result is recorded below. Real-browser performance acceptance remains outstanding.
+
+## Verification after the independent audit
+
+The primary agent pushed the reviewed branch and GitHub Actions run `41916953384` on commit `664d75a` completed successfully on the remote Ubuntu runner. It passed lint, strict typecheck, 31/31 unit tests, all 3 loaded-extension E2E scenarios, and production build. This remote E2E run covers the screenshot-disabled text flow, report persistence/filter/status/delete, repeated cancel/reopen, dynamic and long fixtures, and restricted-page messaging. It did not collect CPU, memory, long-task, responsiveness, or narrow-window measurements.
+
+The primary agent verified the repository reports `PUBLIC` with `gh repo view`, and GitHub resolved branch `feat/mvp-impl` to `664d75aa7a7eb40099bd5d5be344ba28c32562c7`. These checks establish that the public repository and branch are reachable at that revision.
+
+The audit scope above remains an independent static code review; the post-audit CI and GitHub checks are additional evidence, not findings from the auditor. Real-browser performance acceptance remains open.
