@@ -44,6 +44,7 @@ type Measurement = {
   browserCpuMs: number;
   browserCpuPercentOneCore: number;
   browserRssMiB: number;
+  processRssMiBByType: Record<string, number>;
   gpuProcessCount: number;
   gpuCpuMs: number;
   gpuCpuPercentOneCore: number;
@@ -84,10 +85,21 @@ async function processSnapshot(session: CDPSession) {
       }
     }
   }
+  const rssByType: Record<string, number> = {};
+  for (const process of rows) {
+    rssByType[process.type] =
+      (rssByType[process.type] ?? 0) + (rssByPid.get(process.id) ?? 0);
+  }
   return {
     cpuSeconds: rows.reduce((total, process) => total + process.cpuTime, 0),
     rssMiB:
       [...rssByPid.values()].reduce((total, value) => total + value, 0) / 1024,
+    rssMiBByType: Object.fromEntries(
+      Object.entries(rssByType).map(([type, rss]) => [
+        type,
+        Number((rss / 1024).toFixed(1)),
+      ]),
+    ),
     gpuProcessCount: gpuRows.length,
     gpuCpuSeconds: gpuRows.reduce(
       (total, process) => total + process.cpuTime,
@@ -154,6 +166,7 @@ async function sample(
     browserCpuMs: Math.round(cpuMs),
     browserCpuPercentOneCore: Number(((cpuMs / durationMs) * 100).toFixed(2)),
     browserRssMiB: Number(afterBrowser.rssMiB.toFixed(1)),
+    processRssMiBByType: afterBrowser.rssMiBByType,
     gpuProcessCount: afterBrowser.gpuProcessCount,
     gpuCpuMs: Number(gpuCpuMs.toFixed(2)),
     gpuCpuPercentOneCore: Number(((gpuCpuMs / durationMs) * 100).toFixed(2)),
