@@ -346,7 +346,7 @@ test('records comparable browser impact across idle and active states', async ()
       );
     }
 
-    for (let cycle = 0; cycle < 3; cycle += 1) {
+    for (let cycle = 0; cycle < 10; cycle += 1) {
       await page.bringToFront();
       await activateSelection(context, page, extensionId, startLatencies);
       await page.keyboard.press('Escape');
@@ -357,7 +357,7 @@ test('records comparable browser impact across idle and active states', async ()
     results.push(
       await sample(
         fixture.name,
-        'after-three-open-close-cycles',
+        'after-ten-open-close-cycles',
         page,
         pageSession,
         browserSession,
@@ -405,5 +405,17 @@ test('records comparable browser impact across idle and active states', async ()
   expect(results.every((entry) => entry.browserCpuPercentOneCore >= 0)).toBe(
     true,
   );
-  expect(startLatencies).toHaveLength(12);
+  for (const fixture of pages) {
+    const idleHeap = results.find(
+      (entry) =>
+        entry.page === fixture.name && entry.state === 'installed-inactive',
+    )!.pageHeapAfterGcMiB;
+    const repeatedHeap = results.find(
+      (entry) =>
+        entry.page === fixture.name &&
+        entry.state === 'after-ten-open-close-cycles',
+    )!.pageHeapAfterGcMiB;
+    expect(repeatedHeap - idleHeap).toBeLessThan(1);
+  }
+  expect(startLatencies).toHaveLength(33);
 });
