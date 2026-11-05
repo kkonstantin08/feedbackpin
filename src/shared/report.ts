@@ -13,11 +13,11 @@ export interface NewReport {
   url: string;
   viewport: Viewport;
   element: ElementReference;
-  screenshot?: Blob;
-  screenshotError?: string;
 }
 
 export interface Report extends NewReport {
+  screenshot?: Blob;
+  screenshotError?: string;
   id: string;
   createdAt: number;
   status: 'open' | 'resolved';
@@ -69,8 +69,6 @@ export function createReport(input: NewReport): Report {
     },
     status: 'open',
   };
-  if (input.screenshot) report.screenshot = input.screenshot;
-  if (input.screenshotError) report.screenshotError = input.screenshotError;
   return report;
 }
 
