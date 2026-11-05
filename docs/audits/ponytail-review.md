@@ -26,6 +26,6 @@ The dashboard storage estimate is implemented, and its success, failure, listing
 
 **Resolved by product decision:** A closed ShadowRoot attached to a standard HTML element remains undetectable after on-demand injection. The user chose to disable screenshots; the capture message, Chrome capture handler, image processing, and capture UI are removed. Unexpected image payloads are dropped before report persistence.
 
-**Not checked:** Screenshot redaction is out of scope because screenshot capture is disabled. GitHub Actions run `41916953384` passed 3/3 loaded-extension E2E tests on a remote runner; runtime performance, memory, long tasks, and narrow-window UI remain unmeasured.
+**Not checked:** Screenshot redaction is out of scope because screenshot capture is disabled. Impact on the user's laptop and extended real-world sessions remain unmeasured. GitHub Actions run `41988254350` passed all six loaded-extension E2E scenarios on a remote runner, including dashboard overflow at 390 px. The performance report records hosted-runner CPU/RSS, task, startup and cleanup measurements.
 
-Verdict: Text-only privacy path is implemented. Runtime performance remains unmeasured and blocks a performance claim.
+Verdict: Text-only privacy path is implemented. Remote CI performance measurements support the idle/active runtime claims only for the recorded hosted-runner conditions; they do not establish the same impact on the user's hardware.

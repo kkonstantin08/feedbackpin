@@ -66,4 +66,4 @@ Backend/API, accounts, teams, notifications, AI, integrations, screen recording,
 - Cross-origin and closed-shadow content cannot be inspected like ordinary DOM; element references inside such content are best-effort only.
 - Chrome restrictions can prevent injection or screenshot capture on protected pages.
 - Historical image blobs from development builds remain in IndexedDB until the user deletes their report; the current version never creates new images.
-- Real browser performance is not measured; see `docs/performance.md`.
+- Runtime performance was measured on a hosted CI Chromium runner; impact on the user's laptop and extended real-world sessions remain unmeasured. See `docs/performance.md`.

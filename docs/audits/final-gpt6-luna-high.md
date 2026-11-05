@@ -141,3 +141,27 @@ This targeted follow-up closes the P2 finding; it does not constitute broader re
 ## Publication follow-up — primary agent — 2026-11-05
 
 After the independent follow-up, the primary agent fast-forwarded public `main` from `102ad63` to the audited product revision `bf1963a` (`git push origin origin/feat/mvp-impl:refs/heads/main`). GitHub API verification returned `bf1963a062903692d91d11014118ece0ce403227`; `gh repo view` still reports the repository as `PUBLIC` with `main` as its default branch. This publication step postdates the auditor's source review; the audited source SHA is unchanged.
+
+## Final independent follow-up — GPT-6 Luna High — 2026-11-05 — `4c11272`
+
+I independently checked the current source revision `4c11272402fdd1f81d9cef161f50e2850a4eee17`, the applicable `AGENTS.md`, the approved MVP spec and design reference, README, implementation plan, TDD notes, current source/tests, CI configuration, commit history, and the prior audit sections. The changed implementation in this revision is limited to the remote service-worker lifecycle E2E harness; I also reviewed the local uncommitted documentation edits (`docs/performance.md`, spec, plan, and TDD records). I did not change product code or run local tests, Chromium, Playwright, or browser automation. Remote browser evidence is limited to GitHub Actions run [41988254350](https://github.com/kkonstantin08/feedbackpin/actions/runs/41988254350) and its raw artifact.
+
+### Findings
+
+No new findings in the reviewed scope. The earlier shared-storage P2 is already marked resolved at `bf1963a`; I found no regression in this revision.
+
+### Confirmed evidence
+
+- Run `41988254350` is successful and its head SHA exactly matches `4c11272402fdd1f81d9cef161f50e2850a4eee17`. The remote job log reports lint, strict typecheck, 33/33 unit tests, six loaded-extension E2E tests, performance artifact upload, and production build all passed. I inspected the remote logs rather than rerunning tests locally.
+- `tests/e2e/extension.spec.ts:105-114` sets the dashboard viewport to 390 px and asserts `document.documentElement.scrollWidth <= 390`; the same test checks the report heading remains visible. This confirms the narrow-window assertion in the passing remote E2E run.
+- `tests/e2e/service-worker-lifecycle.spec.ts:51-207` launches an isolated Chromium process, connects to the browser DevTools WebSocket bound to `127.0.0.1`, observes `Target.targetCreated`/`Target.targetDestroyed`, and never calls `Target.attachToTarget`. It asserts target destruction between 25 and 60 seconds. Run `41988254350` logged `FEEDBACKPIN_WORKER_STOPPED_AFTER_MS 30101` and passed this test. This is evidence of natural worker target destruction in the isolated CI profile without debugger attachment; it is separate from the 35-second Playwright performance sample, whose worker handle can affect lifecycle.
+- I read `/tmp/feedbackpin-ci-41988254350/performance-results/feedbackpin-performance.json` directly. It identifies Chromium `156.0.8078.4`, three fixtures (`ordinary`, `long`, `dynamic-react`), 33 selector-start samples, and zero recorded long tasks. Recomputing the means from the three fixture rows for each comparable state matches `docs/performance.md`: no-extension CPU/GPU/RSS `2.99% / 1.33% / 988.03 MiB`; installed-inactive `2.99% / 0.83% / 1,093.7 MiB`; active `2.33% / 1.00% / 1,159.4 MiB`; after save `0.50% / 0% / 1,162.5 MiB`; after close `1.50% / 0.75% / 1,178.7 MiB`; ten cycles `3.66% / 2.00% / 1,194.93 MiB`; and quiet `0.49% / 0% / 1,139.2 MiB`. Median selector start is `29.7 ms`, maximum `47.8 ms`; post-GC heap growth after ten cycles is `0.5–0.6 MiB` per fixture. The table's rounded RSS and CPU/GPU values, page-task maxima, and aggregate deltas are consistent with the artifact. These are short hosted-runner Chrome process totals, not memory attribution to the extension or laptop measurements.
+- The approved privacy choice remains reflected in the inspected UI/source/tests: new screenshots are disabled, the report path saves text/URL/viewport/element metadata, and the existing legacy-image compatibility behavior remains covered by the previously reviewed DB tests. The approved Userback-inspired shell is unchanged. Source remains event-driven with explicit-action injection and cleanup; the only new lifecycle instrumentation is a test harness, not product code.
+- The worktree contains uncommitted documentation updates. I checked their performance arithmetic and their statements against the raw artifact and CI logs, but run `41988254350` predates these local documentation edits and therefore does not validate that exact working-tree documentation revision.
+
+### Remaining limits
+
+- The user's laptop, installed personal browser profile, and extended real-world browsing sessions remain **NOT CHECKED**. The prohibition on local browser runs was followed.
+- Remote E2E validates the 390 px dashboard width assertion, not every browser/device viewport, zoom level, or manual interaction. The remote runtime data is a compact CI comparison and is not a release guarantee for other machines.
+- GitHub confirms the repository is public. The reviewed `4c11272` commit is on `feat/mvp-impl`; default branch `main` was at `6d995de` when checked, so it does not include this lifecycle-test commit or the pending local documentation edits.
+- This follow-up is an independent review of the current commit plus local documentation diff, not full release approval. A CI run for the eventual documentation commit remains separate evidence.
