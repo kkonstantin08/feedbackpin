@@ -6,7 +6,7 @@ import {
   type Page,
   type Worker,
 } from '@playwright/test';
-import { mkdir, mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -62,11 +62,6 @@ async function beginSelection() {
 }
 
 test('explains screenshot privacy, saves, reloads, filters, resolves, and deletes a note', async () => {
-  const screenshotDir = path.resolve('.artifacts/readme');
-  await mkdir(screenshotDir, { recursive: true });
-  expect(await page.screenshot()).not.toHaveLength(0);
-  await popup.bringToFront();
-  await popup.screenshot({ path: path.join(screenshotDir, 'popup.png') });
   await page.goto(normalUrl);
   expect(await page.locator('[data-feedbackpin-host]').count()).toBe(0);
 
@@ -108,10 +103,6 @@ test('explains screenshot privacy, saves, reloads, filters, resolves, and delete
     }),
   ).toBeVisible();
   await dashboard.setViewportSize({ width: 1440, height: 920 });
-  await dashboard.screenshot({
-    path: path.join(screenshotDir, 'dashboard.png'),
-    fullPage: true,
-  });
   await dashboard.setViewportSize({ width: 390, height: 844 });
   expect(
     await dashboard.evaluate(() => document.documentElement.scrollWidth),
