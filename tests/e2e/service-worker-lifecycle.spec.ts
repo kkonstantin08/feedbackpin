@@ -33,7 +33,8 @@ function withTimeout<T>(
 }
 
 async function stopChrome(chrome: ChildProcess): Promise<void> {
-  if (chrome.exitCode !== null || chrome.signalCode !== null) return;
+  if (!chrome.pid || chrome.exitCode !== null || chrome.signalCode !== null)
+    return;
   const exited = once(chrome, 'exit');
   chrome.kill('SIGTERM');
   try {
@@ -65,8 +66,14 @@ test('MV3 service worker stops after its idle timeout without debugger attachmen
       '--disable-background-networking',
       '--disable-component-update',
     ],
-    { stdio: 'ignore' },
+    { stdio: ['ignore', 'ignore', 'pipe'] },
   );
+  let spawnError = '';
+  const stderr: string[] = [];
+  chrome.on('error', (error) => {
+    spawnError = error.message;
+  });
+  chrome.stderr?.on('data', (chunk: Buffer) => stderr.push(chunk.toString()));
   let socket: WebSocket | undefined;
 
   try {
@@ -83,7 +90,10 @@ test('MV3 service worker stops after its idle timeout without debugger attachmen
         await new Promise((resolve) => setTimeout(resolve, 100));
       }
     }
-    expect(port).toBeGreaterThan(0);
+    expect(
+      port,
+      `Chrome DevTools port was not created. exit=${chrome.exitCode} error=${spawnError} stderr=${stderr.join('').trim()}`,
+    ).toBeGreaterThan(0);
 
     const response = await fetch(`http://127.0.0.1:${port}/json/version`, {
       signal: AbortSignal.timeout(5_000),
