@@ -63,8 +63,10 @@ test('MV3 service worker stops after its idle timeout without debugger attachmen
       '--remote-debugging-port=0',
       '--no-first-run',
       '--no-default-browser-check',
+      '--no-sandbox',
       '--disable-background-networking',
       '--disable-component-update',
+      '--disable-gpu',
     ],
     { stdio: ['ignore', 'ignore', 'pipe'] },
   );
