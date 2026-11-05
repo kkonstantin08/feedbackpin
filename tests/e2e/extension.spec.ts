@@ -64,6 +64,7 @@ async function beginSelection() {
 test('explains screenshot privacy, saves, reloads, filters, resolves, and deletes a note', async () => {
   const screenshotDir = path.resolve('.artifacts/readme');
   await mkdir(screenshotDir, { recursive: true });
+  await popup.bringToFront();
   await popup.screenshot({ path: path.join(screenshotDir, 'popup.png') });
   await page.goto(normalUrl);
   expect(await page.locator('[data-feedbackpin-host]').count()).toBe(0);
