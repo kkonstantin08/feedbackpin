@@ -50,7 +50,8 @@ type Measurement = {
   gpuRssMiB: number;
   pageTaskMs: number;
   pageScriptMs: number;
-  pageHeapMiB: number;
+  pageHeapAfterGcMiB: number;
+  pageHeapAfterSampleMiB: number;
   longTaskCount: number;
   longTaskTotalMs: number;
 };
@@ -107,6 +108,7 @@ async function sample(
   pageSession: CDPSession,
   browserSession: CDPSession,
 ): Promise<Measurement> {
+  await pageSession.send('HeapProfiler.collectGarbage');
   const [beforeBrowser, beforeMetrics, beforeLongTasks] = await Promise.all([
     processSnapshot(browserSession),
     pageSession.send('Performance.getMetrics'),
@@ -131,6 +133,8 @@ async function sample(
   ]);
   const getMetric = (metrics: { metrics: Metric[] }, name: string) =>
     metrics.metrics.find((metric) => metric.name === name)?.value ?? 0;
+  const pageHeap = (metrics: { metrics: Metric[] }) =>
+    Number((getMetric(metrics, 'JSHeapUsedSize') / (1024 * 1024)).toFixed(1));
   const cpuMs =
     Math.max(0, afterBrowser.cpuSeconds - beforeBrowser.cpuSeconds) * 1000;
   const gpuCpuMs =
@@ -164,9 +168,8 @@ async function sample(
         ) * 1000
       ).toFixed(2),
     ),
-    pageHeapMiB: Number(
-      (getMetric(afterMetrics, 'JSHeapUsedSize') / (1024 * 1024)).toFixed(1),
-    ),
+    pageHeapAfterGcMiB: pageHeap(beforeMetrics),
+    pageHeapAfterSampleMiB: pageHeap(afterMetrics),
     longTaskCount: longTasks.length,
     longTaskTotalMs: Number(
       longTasks.reduce((total, duration) => total + duration, 0).toFixed(2),
@@ -245,6 +248,7 @@ test('records comparable browser impact across idle and active states', async ()
     const baselineBrowserSession = await baselineBrowser.newBrowserCDPSession();
     const baselinePageSession = await baseline.newCDPSession(baselinePage);
     await baselinePageSession.send('Performance.enable');
+    await baselinePageSession.send('HeapProfiler.enable');
     results.push(
       await sample(
         fixture.name,
@@ -280,6 +284,7 @@ test('records comparable browser impact across idle and active states', async ()
     const browserSession = await browser.newBrowserCDPSession();
     const pageSession = await context.newCDPSession(page);
     await pageSession.send('Performance.enable');
+    await pageSession.send('HeapProfiler.enable');
 
     results.push(
       await sample(
