@@ -67,6 +67,14 @@ test('captures the real extension UI on the remote headless runner', async () =>
         name: 'Checkout button overlaps account details.',
       }),
     ).toBeVisible();
+    await dashboard.setViewportSize({ width: 390, height: 844 });
+    expect(
+      await dashboard.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(390);
+    await dashboard.screenshot({
+      path: path.join(screenshotDir, 'dashboard-mobile.png'),
+      fullPage: true,
+    });
     await dashboard.setViewportSize({ width: 1440, height: 920 });
     await dashboard.screenshot({
       path: path.join(screenshotDir, 'dashboard.png'),
