@@ -132,37 +132,21 @@ export function Dashboard() {
 
   return (
     <main className={styles.app}>
-      <header className={styles.topbar}>
-        <div className={styles.brand}>
-          <span className={styles.brandMark} aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none">
-              <path d="M16 4.5a8.5 8.5 0 0 0-8.5 8.5c0 6 8.5 14.5 8.5 14.5S24.5 19 24.5 13A8.5 8.5 0 0 0 16 4.5Z" />
-              <circle cx="16" cy="13" r="2.6" />
-            </svg>
-          </span>
-          <span className={styles.brandCopy}>
-            <strong>FeedbackPin</strong>
-            <small>Feedback inbox</small>
-          </span>
-        </div>
-        <span className={styles.privacy}>
-          <i />
-          Stored on this device
-        </span>
-      </header>
       <div className={styles.workspace}>
         <aside className={styles.sidebar} aria-label="Feedback navigation">
-          <div className={styles.workspacePicker}>
-            <span className={styles.workspaceMark} aria-hidden="true">
-              F
+          <div className={styles.brand}>
+            <span className={styles.brandMark} aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none">
+                <path d="M16 4.5a8.5 8.5 0 0 0-8.5 8.5c0 6 8.5 14.5 8.5 14.5S24.5 19 24.5 13A8.5 8.5 0 0 0 16 4.5Z" />
+                <circle cx="16" cy="13" r="2.6" />
+              </svg>
             </span>
-            <span>
-              <strong>Personal workspace</strong>
-              <small>Private project</small>
+            <span className={styles.brandCopy}>
+              <strong>FeedbackPin</strong>
+              <small>Feedback inbox</small>
             </span>
           </div>
           <div className={styles.sidebarTitle}>
-            <small>WORKSPACE</small>
             <h1>
               Inbox <b>{reports.length}</b>
             </h1>
@@ -177,10 +161,25 @@ export function Dashboard() {
                 aria-pressed={filter === item.id}
                 onClick={() => setFilter(item.id)}
               >
-                <span
-                  className={`${styles.filterMark} ${styles[`filterMark_${item.id}`]}`}
-                  aria-hidden="true"
-                />
+                <span className={styles.filterIcon} aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    {item.id === 'all' ? (
+                      <>
+                        <rect x="3.5" y="3.5" width="5" height="5" rx="1" />
+                        <rect x="11.5" y="3.5" width="5" height="5" rx="1" />
+                        <rect x="3.5" y="11.5" width="5" height="5" rx="1" />
+                        <rect x="11.5" y="11.5" width="5" height="5" rx="1" />
+                      </>
+                    ) : item.id === 'open' ? (
+                      <circle cx="10" cy="10" r="6.5" />
+                    ) : (
+                      <>
+                        <circle cx="10" cy="10" r="6.5" />
+                        <path d="m7 10 2 2 4-4" />
+                      </>
+                    )}
+                  </svg>
+                </span>
                 {item.label}
                 <span>{counts[item.id]}</span>
               </button>
@@ -337,54 +336,59 @@ export function Dashboard() {
                 aria-labelledby="page-context-title"
               >
                 <div className={styles.contextHeader}>
-                  <div>
-                    <small>PAGE CONTEXT</small>
-                    <h3 id="page-context-title">Reported on this page</h3>
-                  </div>
+                  <h3 id="page-context-title">Page context</h3>
                   <span className={styles.viewport}>
                     <span aria-hidden="true">↔</span>
                     {selected.viewport.width} × {selected.viewport.height}
                   </span>
                 </div>
                 <div className={styles.contextRows}>
-                  <div className={styles.contextRow}>
-                    <span className={styles.contextIcon} aria-hidden="true">
-                      <svg viewBox="0 0 20 20" fill="none">
-                        <circle cx="10" cy="10" r="7" />
-                        <path d="M3.5 10h13M10 3a11 11 0 0 1 0 14M10 3a11 11 0 0 0 0 14" />
-                      </svg>
-                    </span>
-                    <div>
-                      <small>PAGE URL</small>
+                  <div
+                    className={styles.contextField}
+                    role="group"
+                    aria-labelledby="page-url-label"
+                  >
+                    <span id="page-url-label">Page URL</span>
+                    <div className={styles.contextInput}>
+                      <span className={styles.contextIcon} aria-hidden="true">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <circle cx="10" cy="10" r="7" />
+                          <path d="M3.5 10h13M10 3a11 11 0 0 1 0 14M10 3a11 11 0 0 0 0 14" />
+                        </svg>
+                      </span>
                       <a href={selected.url} target="_blank" rel="noreferrer">
                         {selected.url}
                       </a>
+                      <a
+                        className={styles.openPage}
+                        href={selected.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Open reported page in a new tab"
+                      >
+                        ↗
+                      </a>
                     </div>
-                    <a
-                      className={styles.openPage}
-                      href={selected.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      aria-label="Open reported page in a new tab"
-                    >
-                      ↗
-                    </a>
                   </div>
-                  <div className={styles.contextRow}>
-                    <span className={styles.contextIcon} aria-hidden="true">
-                      <svg viewBox="0 0 20 20" fill="none">
-                        <rect x="3" y="3" width="5" height="5" rx="1" />
-                        <rect x="12" y="12" width="5" height="5" rx="1" />
-                        <path d="M8 5.5h3a1 1 0 0 1 1 1v5.5" />
-                      </svg>
-                    </span>
-                    <div>
-                      <small>SELECTED ELEMENT</small>
+                  <div
+                    className={styles.contextField}
+                    role="group"
+                    aria-labelledby="element-reference-label"
+                  >
+                    <span id="element-reference-label">Selected element</span>
+                    <div className={styles.contextInput}>
+                      <span className={styles.contextIcon} aria-hidden="true">
+                        <svg viewBox="0 0 20 20" fill="none">
+                          <rect x="3" y="3" width="5" height="5" rx="1" />
+                          <rect x="12" y="12" width="5" height="5" rx="1" />
+                          <path d="M8 5.5h3a1 1 0 0 1 1 1v5.5" />
+                        </svg>
+                      </span>
                       <code>{selected.element.selector}</code>
+                      <span className={styles.elementTag}>
+                        {selected.element.tag}
+                      </span>
                     </div>
-                    <span className={styles.elementTag}>
-                      {selected.element.tag}
-                    </span>
                   </div>
                 </div>
               </section>

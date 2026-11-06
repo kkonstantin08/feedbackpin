@@ -97,6 +97,12 @@ describe('local feedback dashboard', () => {
     expect(
       await screen.findByRole('heading', { name: 'Text-only issue' }),
     ).toBeInTheDocument();
+    expect(screen.getByRole('group', { name: 'Page URL' })).toHaveTextContent(
+      'https://example.test/page',
+    );
+    expect(
+      screen.getByRole('group', { name: 'Selected element' }),
+    ).toHaveTextContent('html > body > button:nth-of-type(1)');
     expect(screen.queryByRole('region', { name: /screenshot/i })).toBeNull();
     expect(screen.queryByText(/no screenshot was saved/i)).toBeNull();
   });

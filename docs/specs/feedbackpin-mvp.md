@@ -8,7 +8,9 @@ FeedbackPin is a local-first Chrome extension for creating concise visual bug re
 
 ## Approved visual direction
 
-The user approved a more developed product shell inspired by the visual feel of Userback. The dashboard is an inbox: clear status navigation and a readable report list on the left, with the selected note and its page/element context in a distinct detail area. Use a polished light surface, confident type scale, and one expressive accent; keep real report content prominent and avoid empty screenshot placeholders for new text-only reports. Preserve historical local images when present. The reference guides the visual character only; no Userback screen is copied. The extension popup should feel like the same product and make the selection action immediately obvious. On the website itself, selection remains quiet: a restrained highlight and a compact comment form. MVP is light-theme only; a second theme adds UI surface without serving a stated need.
+On 2026-11-06 the user replaced the earlier Userback-inspired appearance with the supplied light SaaS settings-screen reference. Keep FeedbackPin's inbox and report details, but use a clean white application surface, a full-height left navigation rail, thin cool-gray borders, dark navy text, generously spaced outlined controls with rounded corners, and one vivid violet accent for primary actions. Lay page URL and element reference out as labeled fields; keep the comment and status actions prominent. The popup uses the same white, outlined, violet-accented language.
+
+The attachment supplies visual guidance only. Do not import AcmeApp's profile, search, users, payment details, or other unrelated content/features. Do not add external fonts, image assets, animation libraries, gradients, or heavy shadows. Preserve historical local images when present; never show an empty screenshot placeholder for a text-only report. The on-page selector remains quiet with a restrained highlight and compact comment form. MVP is light-theme only; a second theme adds UI surface without a stated need.
 
 ## User flow and functional requirements
 

@@ -4,15 +4,16 @@
   width: 360px;
   min-height: 420px;
   margin: 0;
+  background: #fff;
 }
 
 .popup {
   box-sizing: border-box;
   width: 360px;
   min-height: 420px;
-  padding: 15px;
-  color: #292638;
-  background: #f3f3f7;
+  padding: 16px 18px;
+  color: #1d293c;
+  background: #fff;
   font-family:
     ui-sans-serif,
     system-ui,
@@ -24,14 +25,12 @@
 
 .header {
   display: flex;
-  min-height: 58px;
+  min-height: 57px;
   box-sizing: border-box;
   align-items: center;
   gap: 10px;
-  border: 1px solid #e9e7ef;
-  border-radius: 13px;
-  padding: 9px 11px;
-  background: #fff;
+  border-bottom: 1px solid #d7e0ec;
+  padding: 0 0 14px;
 }
 
 .brandMark {
@@ -40,9 +39,9 @@
   width: 36px;
   height: 36px;
   place-items: center;
-  border-radius: 10px;
+  border-radius: 12px;
   color: #fff;
-  background: #6046c7;
+  background: #5941f3;
 }
 
 .brandMark svg {
@@ -79,11 +78,11 @@
   align-items: center;
   gap: 6px;
   margin-left: auto;
-  border: 1px solid #e9eee9;
-  border-radius: 7px;
+  border: 1px solid #dfe5ee;
+  border-radius: 999px;
   padding: 0 7px;
-  color: #567761;
-  background: #f6faf7;
+  color: #566780;
+  background: #fff;
   font-size: 9px;
   font-weight: 600;
 }
@@ -92,31 +91,16 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #4aa078;
+  background: #5941f3;
 }
 
 .intro {
-  position: relative;
-  overflow: hidden;
-  margin-top: 13px;
-  border: 1px solid #e9e7ef;
-  border-radius: 15px;
-  padding: 22px 20px 20px;
-  background: #fff;
-}
-
-.intro::before {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 3px;
-  background: #6046c7;
-  content: '';
+  margin-top: 20px;
+  padding: 4px 0 22px;
 }
 
 .eyebrow {
-  color: #7463b9;
+  color: #5941f3;
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.9px;
@@ -124,8 +108,8 @@
 
 .intro h2 {
   max-width: 280px;
-  margin: 11px 0 8px;
-  color: #292638;
+  margin: 12px 0 8px;
+  color: #1d293c;
   font-size: 25px;
   font-weight: 680;
   letter-spacing: -0.8px;
@@ -136,7 +120,7 @@
 .intro p {
   max-width: 290px;
   margin: 0;
-  color: #777382;
+  color: #617189;
   font-size: 11px;
   line-height: 1.55;
 }
@@ -149,29 +133,28 @@
   align-items: center;
   gap: 10px;
   margin-top: 12px;
-  border: 1px solid #6046c7;
-  border-radius: 10px;
+  border: 1px solid #5941f3;
+  border-radius: 999px;
   padding: 0 13px;
   color: #fff;
-  background: #6046c7;
+  background: #5941f3;
   font: inherit;
   font-size: 12px;
   font-weight: 640;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgb(69 47 146 / 15%);
   transition:
     background-color 140ms ease,
     border-color 140ms ease;
 }
 
 .primary:hover:not(:disabled) {
-  border-color: #5039b4;
-  background: #5039b4;
+  border-color: #4932d8;
+  background: #4932d8;
 }
 
 .primary:focus-visible,
 .footer a:focus-visible {
-  outline: 3px solid #c7bdf1;
+  outline: 3px solid #a99bff;
   outline-offset: 2px;
 }
 
@@ -227,10 +210,8 @@
   justify-content: space-between;
   gap: 9px;
   margin-top: 19px;
-  border: 1px solid #e9e7ef;
-  border-radius: 12px;
-  padding: 11px;
-  background: #fff;
+  border-top: 1px solid #d7e0ec;
+  padding: 14px 0 0;
 }
 
 .privacyNote {
@@ -246,9 +227,9 @@
   width: 29px;
   height: 29px;
   place-items: center;
-  border-radius: 8px;
-  color: #587c69;
-  background: #eff5f1;
+  border-radius: 10px;
+  color: #5941f3;
+  background: #f2f0ff;
 }
 
 .lockMark svg {
@@ -273,19 +254,19 @@
 }
 
 .privacyNote strong {
-  color: #514e5d;
+  color: #344258;
   font-size: 10px;
   font-weight: 640;
 }
 
 .privacyNote small {
-  color: #85818f;
+  color: #617189;
   font-size: 9px;
 }
 
 .footer a {
   flex: 0 0 auto;
-  color: #5b46b8;
+  color: #5140dc;
   font-size: 10px;
   font-weight: 650;
   text-decoration: none;
