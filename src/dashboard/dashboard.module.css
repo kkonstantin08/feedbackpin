@@ -390,17 +390,36 @@
     monospace;
 }
 
-.openDot,
-.resolvedDot {
-  flex: 0 0 7px;
-  width: 7px;
-  height: 7px;
-  margin: 5px 1px 0 auto;
+.reportStatusOpen,
+.reportStatusResolved {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 5px;
+  margin: 3px 0 0 auto;
+  border: 1px solid #f0dfc9;
+  border-radius: 999px;
+  padding: 3px 7px;
+  color: #8b5e23;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.reportStatusOpen i,
+.reportStatusResolved i {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: #d99543;
 }
 
-.resolvedDot {
+.reportStatusResolved {
+  border-color: #d8eadf;
+  color: #42785e;
+}
+
+.reportStatusResolved i {
   background: #4b9b76;
 }
 

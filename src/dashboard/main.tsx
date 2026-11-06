@@ -217,14 +217,16 @@ export function Dashboard() {
                         {formatDate(item.createdAt)}
                       </small>
                     </span>
-                    <i
+                    <span
                       className={
                         item.status === 'resolved'
-                          ? styles.resolvedDot
-                          : styles.openDot
+                          ? styles.reportStatusResolved
+                          : styles.reportStatusOpen
                       }
-                      aria-label={item.status}
-                    />
+                    >
+                      <i aria-hidden="true" />
+                      {item.status === 'resolved' ? 'Resolved' : 'Open'}
+                    </span>
                   </button>
                 </li>
               ))}

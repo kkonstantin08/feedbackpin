@@ -143,15 +143,17 @@ describe('local feedback dashboard', () => {
       getByRole('navigation', { name: 'Filter reports' }),
     );
 
-    expect(
-      await screen.findByRole('button', {
-        name: /button needs a clearer label/i,
-      }),
-    ).toBeInTheDocument();
+    const openRow = await screen.findByRole('button', {
+      name: /button needs a clearer label/i,
+    });
+    expect(openRow).toBeInTheDocument();
+    expect(within(openRow).getByText('Open')).toBeInTheDocument();
     await user.click(filterNav.getByRole('button', { name: /^Resolved/ }));
-    expect(
-      await screen.findByRole('button', { name: /resolved layout issue/i }),
-    ).toBeInTheDocument();
+    const resolvedRow = await screen.findByRole('button', {
+      name: /resolved layout issue/i,
+    });
+    expect(resolvedRow).toBeInTheDocument();
+    expect(within(resolvedRow).getByText('Resolved')).toBeInTheDocument();
     expect(
       queryByRole('button', { name: /button needs a clearer label/i }),
     ).not.toBeInTheDocument();
