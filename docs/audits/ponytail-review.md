@@ -29,3 +29,11 @@ The dashboard storage estimate is implemented, and its success, failure, listing
 **Not checked:** Screenshot redaction is out of scope because screenshot capture is disabled. Impact on the user's laptop and extended real-world sessions remain unmeasured. GitHub Actions run `41988254350` passed all six loaded-extension E2E scenarios on a remote runner, including dashboard overflow at 390 px. The performance report records hosted-runner CPU/RSS, task, startup and cleanup measurements.
 
 Verdict: Text-only privacy path is implemented. Remote CI performance measurements support the idle/active runtime claims only for the recorded hosted-runner conditions; they do not establish the same impact on the user's hardware.
+
+## UI redesign follow-up — 2026-11-06
+
+What this change does: The dashboard now presents reports as a compact inbox with a readable detail view and page context. The popup and dashboard share one product identity, and each report row shows its state in text as well as color.
+
+Looks good. Ship. The change reuses the existing React page and CSS Modules, adds no dependencies, and retains the current data flow. Focused tests verify visible Open/Resolved labels; remote run `42182300358` passed lint, typecheck, all 35 unit tests, six loaded-extension E2E cases, and production build. The 390 px screenshot was inspected and has no horizontal overflow.
+
+Not checked: Resource use on the user's laptop; hosted-runner process totals are not a laptop measurement.

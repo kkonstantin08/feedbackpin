@@ -19,6 +19,8 @@ FeedbackPin has no account, backend, network reporting, analytics, or team works
 
 ![FeedbackPin dashboard with a sample note](docs/assets/dashboard.png)
 
+![FeedbackPin dashboard at a 390 px viewport](docs/assets/dashboard-mobile.png)
+
 These are real screenshots of the built extension using a synthetic local fixture in remote CI. The product itself does not capture page screenshots; the dashboard shows a note without an image for privacy.
 
 ## Install in Chrome

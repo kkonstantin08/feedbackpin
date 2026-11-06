@@ -149,5 +149,5 @@ The user approved the Stage B specification and plan, then authorized implementa
 - [x] Bring popup typography, spacing, and action hierarchy into the same product identity without adding dependencies, remote fonts, or animation work.
 - [x] Add RED/GREEN evidence for the screenshot-free detail state and regression coverage for legacy image display and current report actions.
 - [x] Run the 35 unit tests, lint, strict typecheck, and production build locally; no browser was launched.
-- [ ] Run loaded-extension E2E and produce updated screenshots only on the remote GitHub Actions runner. Never start a local browser.
-- [ ] Recheck dashboard layout at 390 px and 1440 px using the existing loaded-extension scenario; inspect downloaded CI screenshots without opening a browser locally.
+- [x] Run loaded-extension E2E after adding visible report status labels. Remote run `42182300358` passed all six cases and produced updated screenshots; never start a local browser.
+- [x] Recheck dashboard at 390 px and 1440 px; the mobile test asserts `scrollWidth <= 390`. The popup, mobile, and desktop CI screenshots were visually inspected without opening a browser locally.
