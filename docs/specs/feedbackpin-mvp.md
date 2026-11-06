@@ -8,7 +8,7 @@ FeedbackPin is a local-first Chrome extension for creating concise visual bug re
 
 ## Approved visual direction
 
-The user approved a more developed product shell inspired by the visual feel of Userback. The FeedbackPin dashboard may use a clear app frame, polished light surfaces, strong typographic hierarchy, and one expressive accent color. The reference guides the visual character only; no Userback screen is copied. The extension popup and dashboard contain only FeedbackPin's required actions and report list/statuses. On the website itself, selection remains quiet: a restrained highlight and a compact comment form. MVP is light-theme only; a second theme adds UI surface without serving a stated need.
+The user approved a more developed product shell inspired by the visual feel of Userback. The dashboard is an inbox: clear status navigation and a readable report list on the left, with the selected note and its page/element context in a distinct detail area. Use a polished light surface, confident type scale, and one expressive accent; keep real report content prominent and avoid empty screenshot placeholders for new text-only reports. Preserve historical local images when present. The reference guides the visual character only; no Userback screen is copied. The extension popup should feel like the same product and make the selection action immediately obvious. On the website itself, selection remains quiet: a restrained highlight and a compact comment form. MVP is light-theme only; a second theme adds UI surface without serving a stated need.
 
 ## User flow and functional requirements
 

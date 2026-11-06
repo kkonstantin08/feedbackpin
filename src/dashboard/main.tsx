@@ -133,18 +133,38 @@ export function Dashboard() {
   return (
     <main className={styles.app}>
       <header className={styles.topbar}>
-        <strong>⌖ &nbsp;FeedbackPin</strong>
-        <span>
+        <div className={styles.brand}>
+          <span className={styles.brandMark} aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M16 4.5a8.5 8.5 0 0 0-8.5 8.5c0 6 8.5 14.5 8.5 14.5S24.5 19 24.5 13A8.5 8.5 0 0 0 16 4.5Z" />
+              <circle cx="16" cy="13" r="2.6" />
+            </svg>
+          </span>
+          <span className={styles.brandCopy}>
+            <strong>FeedbackPin</strong>
+            <small>Feedback inbox</small>
+          </span>
+        </div>
+        <span className={styles.privacy}>
           <i />
           Stored on this device
         </span>
       </header>
       <div className={styles.workspace}>
-        <aside className={styles.sidebar} aria-label="Feedback list">
+        <aside className={styles.sidebar} aria-label="Feedback navigation">
+          <div className={styles.workspacePicker}>
+            <span className={styles.workspaceMark} aria-hidden="true">
+              F
+            </span>
+            <span>
+              <strong>Personal workspace</strong>
+              <small>Private project</small>
+            </span>
+          </div>
           <div className={styles.sidebarTitle}>
             <small>WORKSPACE</small>
             <h1>
-              Your feedback <b>{reports.length}</b>
+              Inbox <b>{reports.length}</b>
             </h1>
           </div>
           <nav aria-label="Filter reports" className={styles.filters}>
@@ -157,13 +177,17 @@ export function Dashboard() {
                 aria-pressed={filter === item.id}
                 onClick={() => setFilter(item.id)}
               >
+                <span
+                  className={`${styles.filterMark} ${styles[`filterMark_${item.id}`]}`}
+                  aria-hidden="true"
+                />
                 {item.label}
                 <span>{counts[item.id]}</span>
               </button>
             ))}
           </nav>
           <p className={styles.listTitle}>
-            RECENT NOTES <span>{visible.length}</span>
+            Recent feedback <span>{visible.length}</span>
           </p>
           {loading ? (
             <p className={styles.listState}>Loading local notes…</p>
@@ -180,8 +204,11 @@ export function Dashboard() {
                     aria-pressed={selected?.id === item.id}
                     onClick={() => setSelectedId(item.id)}
                   >
-                    <span className={styles.pin} aria-hidden="true">
-                      ⌖
+                    <span className={styles.reportMark} aria-hidden="true">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <path d="M10 2.5a5.4 5.4 0 0 0-5.4 5.4c0 3.8 5.4 9.2 5.4 9.2s5.4-5.4 5.4-9.2A5.4 5.4 0 0 0 10 2.5Z" />
+                        <circle cx="10" cy="7.9" r="1.6" />
+                      </svg>
                     </span>
                     <span className={styles.reportCopy}>
                       <strong>{item.comment}</strong>
@@ -210,9 +237,15 @@ export function Dashboard() {
             </p>
           )}
           <footer className={styles.sidebarFoot}>
-            ◈ &nbsp;Private by default
-            <div>
-              <small>Nothing leaves this browser.</small>
+            <span className={styles.privacyMark} aria-hidden="true">
+              <svg viewBox="0 0 20 20" fill="none">
+                <path d="M5.5 8.3V6.5a4.5 4.5 0 0 1 9 0v1.8" />
+                <rect x="4" y="8.3" width="12" height="9" rx="2" />
+                <circle cx="10" cy="12.6" r="1" />
+              </svg>
+            </span>
+            <div className={styles.privacyCopy}>
+              <strong>Private by default</strong>
               <small aria-live="polite">{storageUsage}</small>
             </div>
           </footer>
@@ -237,70 +270,139 @@ export function Dashboard() {
               </p>
             </div>
           ) : (
-            <article>
-              <div className={styles.breadcrumb}>
-                FEEDBACK <span>/</span> {selected.status.toUpperCase()}{' '}
-                <time>{formatDate(selected.createdAt)}</time>
-              </div>
-              <div className={styles.detailHeading}>
-                <span className={styles.elementTag}>
-                  {selected.element.tag}
-                </span>
-                <div className={styles.title}>
-                  <h2>{selected.comment}</h2>
-                  <a href={selected.url} target="_blank" rel="noreferrer">
-                    {selected.url} ↗
-                  </a>
+            <article className={styles.detailPanel}>
+              <div className={styles.recordHeader}>
+                <div className={styles.breadcrumb}>
+                  <span>Feedback</span>
+                  <span aria-hidden="true">/</span>
+                  Inbox
+                  <time>{formatDate(selected.createdAt)}</time>
                 </div>
-                <div className={styles.actions}>
-                  <button
-                    aria-label={
-                      selected.status === 'open'
+                <div className={styles.detailHeading}>
+                  <div className={styles.title}>
+                    <div className={styles.issueMeta}>
+                      <span
+                        className={
+                          selected.status === 'resolved'
+                            ? styles.statusResolved
+                            : styles.statusOpen
+                        }
+                      >
+                        <i />
+                        {selected.status === 'resolved' ? 'Resolved' : 'Open'}
+                      </span>
+                      <span className={styles.elementTag}>
+                        {selected.element.tag}
+                      </span>
+                    </div>
+                    <h2>{selected.comment}</h2>
+                  </div>
+                  <div className={styles.actions}>
+                    <button
+                      aria-label={
+                        selected.status === 'open'
+                          ? 'Mark as resolved'
+                          : 'Reopen report'
+                      }
+                      onClick={() => void changeStatus(selected)}
+                      disabled={busy}
+                    >
+                      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        {selected.status === 'open' ? (
+                          <path d="m4.5 10 3.5 3.5 7.5-7.5" />
+                        ) : (
+                          <path d="M5 8a5.5 5.5 0 1 1 .2 4.3M5 4.5V8h3.5" />
+                        )}
+                      </svg>
+                      {selected.status === 'open'
                         ? 'Mark as resolved'
-                        : 'Reopen report'
-                    }
-                    onClick={() => void changeStatus(selected)}
-                    disabled={busy}
-                  >
-                    {selected.status === 'open'
-                      ? '✓ Mark as resolved'
-                      : '↶ Reopen'}
-                  </button>
-                  <button
-                    aria-label="Delete report"
-                    onClick={() => void remove(selected)}
-                    disabled={busy}
-                  >
-                    ⌫
-                  </button>
+                        : 'Reopen'}
+                    </button>
+                    <button
+                      aria-label="Delete report"
+                      onClick={() => void remove(selected)}
+                      disabled={busy}
+                    >
+                      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M4 5.5h12M8 5.5V4h4v1.5m-6.5 0 .7 10h7.6l.7-10M8.5 8.5v4m3-4v4" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className={styles.meta}>
-                <div>
-                  <small>ELEMENT</small>
-                  <code>{selected.element.selector}</code>
-                </div>
-                <div>
-                  <small>VIEWPORT</small>
-                  <code>
+              <section
+                className={styles.pageContext}
+                aria-labelledby="page-context-title"
+              >
+                <div className={styles.contextHeader}>
+                  <div>
+                    <small>PAGE CONTEXT</small>
+                    <h3 id="page-context-title">Reported on this page</h3>
+                  </div>
+                  <span className={styles.viewport}>
+                    <span aria-hidden="true">↔</span>
                     {selected.viewport.width} × {selected.viewport.height}
-                  </code>
+                  </span>
                 </div>
-              </div>
-              <section className={styles.screenshot} aria-label="Screenshot">
-                <p>SCREENSHOT {selected.screenshot && <span>WEBP</span>}</p>
-                {imageUrl ? (
+                <div className={styles.contextRows}>
+                  <div className={styles.contextRow}>
+                    <span className={styles.contextIcon} aria-hidden="true">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="10" r="7" />
+                        <path d="M3.5 10h13M10 3a11 11 0 0 1 0 14M10 3a11 11 0 0 0 0 14" />
+                      </svg>
+                    </span>
+                    <div>
+                      <small>PAGE URL</small>
+                      <a href={selected.url} target="_blank" rel="noreferrer">
+                        {selected.url}
+                      </a>
+                    </div>
+                    <a
+                      className={styles.openPage}
+                      href={selected.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Open reported page in a new tab"
+                    >
+                      ↗
+                    </a>
+                  </div>
+                  <div className={styles.contextRow}>
+                    <span className={styles.contextIcon} aria-hidden="true">
+                      <svg viewBox="0 0 20 20" fill="none">
+                        <rect x="3" y="3" width="5" height="5" rx="1" />
+                        <rect x="12" y="12" width="5" height="5" rx="1" />
+                        <path d="M8 5.5h3a1 1 0 0 1 1 1v5.5" />
+                      </svg>
+                    </span>
+                    <div>
+                      <small>SELECTED ELEMENT</small>
+                      <code>{selected.element.selector}</code>
+                    </div>
+                    <span className={styles.elementTag}>
+                      {selected.element.tag}
+                    </span>
+                  </div>
+                </div>
+              </section>
+              {imageUrl && (
+                <section
+                  className={styles.screenshot}
+                  aria-label="Saved screenshot"
+                >
+                  <p>Saved screenshot</p>
                   <img
                     src={imageUrl}
                     alt="Saved screenshot of the visible page"
                   />
-                ) : (
-                  <div>
-                    {selected.screenshotError ||
-                      'No screenshot was saved with this note.'}
-                  </div>
-                )}
-              </section>
+                </section>
+              )}
+              {!imageUrl && selected.screenshotError && (
+                <p className={styles.attachmentNotice} role="note">
+                  {selected.screenshotError}
+                </p>
+              )}
             </article>
           )}
         </section>

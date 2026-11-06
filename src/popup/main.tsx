@@ -38,21 +38,18 @@ export function Popup() {
         </div>
         <div>
           <h1>FeedbackPin</h1>
-          <p>Visual feedback, kept local</p>
+          <p>Element feedback, kept local</p>
         </div>
         <span className={styles.localTag}>
           <span />
-          Local
+          Local only
         </span>
       </header>
 
       <section className={styles.intro} aria-labelledby="intro-title">
-        <span className={styles.eyebrow}>ON THIS PAGE</span>
-        <h2 id="intro-title">Pin feedback to an element.</h2>
-        <p>
-          Choose the part that needs attention and leave a clear note for your
-          next fix.
-        </p>
+        <span className={styles.eyebrow}>THIS PAGE</span>
+        <h2 id="intro-title">Point to what needs attention.</h2>
+        <p>Select an element, then leave a clear note for the next fix.</p>
       </section>
 
       <button
@@ -64,8 +61,12 @@ export function Popup() {
           <path d="M4 3.5 15.6 10l-5 1.1L8.4 16 4 3.5Z" />
         </svg>
         {starting ? 'Starting…' : 'Select an element'}
-        <span className={styles.shortcut}>ESC to cancel</span>
+        <kbd className={styles.shortcut}>Esc to cancel</kbd>
       </button>
+
+      <p className={styles.hint}>
+        Click any element on the page to place a note.
+      </p>
 
       {error && (
         <p className={styles.error} role="alert">
@@ -74,9 +75,21 @@ export function Popup() {
       )}
 
       <footer className={styles.footer}>
-        <span>Your notes stay on this device.</span>
+        <div className={styles.privacyNote}>
+          <span className={styles.lockMark} aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M5.5 8.3V6.5a4.5 4.5 0 0 1 9 0v1.8" />
+              <rect x="4" y="8.3" width="12" height="9" rx="2" />
+              <circle cx="10" cy="12.6" r="1" />
+            </svg>
+          </span>
+          <span>
+            <strong>Private by default</strong>
+            <small>Your notes stay in this browser.</small>
+          </span>
+        </div>
         <a href={dashboard} target="_blank">
-          Open reports <span aria-hidden="true">↗</span>
+          Open inbox <span aria-hidden="true">↗</span>
         </a>
       </footer>
     </main>

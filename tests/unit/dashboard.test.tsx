@@ -8,7 +8,7 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   closeDatabase,
   addReport,
@@ -88,6 +88,42 @@ describe('local feedback dashboard', () => {
         /open a website, then choose feedbackpin from the toolbar/i,
       ),
     ).toBeInTheDocument();
+  });
+
+  it('does not reserve a screenshot panel for text-only reports', async () => {
+    await addReport(report('Text-only issue'));
+    render(<Dashboard />);
+
+    expect(
+      await screen.findByRole('heading', { name: 'Text-only issue' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('region', { name: /screenshot/i })).toBeNull();
+    expect(screen.queryByText(/no screenshot was saved/i)).toBeNull();
+  });
+
+  it('continues displaying images already saved by older builds', async () => {
+    const saved = await addReport(report('Older note with an image'));
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('feedbackpin', 1);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    await new Promise<void>((resolve, reject) => {
+      const transaction = database.transaction('reports', 'readwrite');
+      transaction.objectStore('reports').put({
+        ...saved,
+        screenshot: new Blob(['legacy image'], { type: 'image/webp' }),
+      });
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+    });
+    database.close();
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:legacy-image');
+    render(<Dashboard />);
+
+    expect(
+      await screen.findByRole('img', { name: /saved screenshot/i }),
+    ).toHaveAttribute('src', 'blob:legacy-image');
   });
 
   it('filters reports by status and updates the selected report status', async () => {

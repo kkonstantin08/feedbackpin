@@ -139,3 +139,15 @@
 ## Handoff
 
 The user approved the Stage B specification and plan, then authorized implementation. Execute inline unless a task needs independent work; keep concurrent subagents at or below two.
+
+## Task 10: Apply the approved product-shell design to the actual UI
+
+**Files:** `src/dashboard/main.tsx`, `src/dashboard/dashboard.module.css`, `src/popup/main.tsx`, `src/popup/popup.module.css`, `tests/unit/dashboard.test.tsx`, `tests/unit/popup.test.tsx`, `tests/e2e/readme-screenshots.spec.ts`, `docs/specs/feedbackpin-mvp.md`, `docs/tdd/ui-redesign.md`.
+
+- [x] Use the Userback-inspired inbox structure already approved in the spec: visible product header, status navigation, readable report list, and a report-detail area that foregrounds the note and page context.
+- [x] Remove the large empty screenshot placeholder for text-only reports while preserving rendering of legacy local screenshot blobs.
+- [x] Bring popup typography, spacing, and action hierarchy into the same product identity without adding dependencies, remote fonts, or animation work.
+- [x] Add RED/GREEN evidence for the screenshot-free detail state and regression coverage for legacy image display and current report actions.
+- [x] Run the 35 unit tests, lint, strict typecheck, and production build locally; no browser was launched.
+- [ ] Run loaded-extension E2E and produce updated screenshots only on the remote GitHub Actions runner. Never start a local browser.
+- [ ] Recheck dashboard layout at 390 px and 1440 px using the existing loaded-extension scenario; inspect downloaded CI screenshots without opening a browser locally.

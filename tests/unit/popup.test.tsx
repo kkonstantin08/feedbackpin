@@ -56,7 +56,7 @@ describe('extension popup', () => {
   it('links directly to the local report dashboard', () => {
     mountPopup();
 
-    expect(screen.getByRole('link', { name: /open reports/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /open inbox/i })).toHaveAttribute(
       'href',
       'chrome-extension://feedbackpin/src/dashboard/index.html',
     );

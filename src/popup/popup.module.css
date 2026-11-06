@@ -2,19 +2,18 @@
 :global(body),
 :global(#root) {
   width: 360px;
-  min-height: 360px;
+  min-height: 420px;
   margin: 0;
 }
 
 .popup {
-  width: 360px;
-  min-height: 360px;
   box-sizing: border-box;
-  padding: 21px 22px 17px;
-  color: #20212a;
-  background: #fff;
+  width: 360px;
+  min-height: 420px;
+  padding: 15px;
+  color: #292638;
+  background: #f3f3f7;
   font-family:
-    Inter,
     ui-sans-serif,
     system-ui,
     -apple-system,
@@ -25,150 +24,273 @@
 
 .header {
   display: flex;
+  min-height: 58px;
+  box-sizing: border-box;
   align-items: center;
-  gap: 11px;
+  gap: 10px;
+  border: 1px solid #e9e7ef;
+  border-radius: 13px;
+  padding: 9px 11px;
+  background: #fff;
 }
+
 .brandMark {
   display: grid;
+  flex: 0 0 36px;
   width: 36px;
   height: 36px;
   place-items: center;
-  border-radius: 11px;
+  border-radius: 10px;
   color: #fff;
-  background: #6554c0;
+  background: #6046c7;
 }
+
 .brandMark svg {
-  width: 24px;
-  height: 24px;
+  width: 23px;
+  height: 23px;
 }
+
 .brandMark path {
   stroke: currentColor;
   stroke-width: 1.8;
   stroke-linejoin: round;
 }
+
 .brandMark circle {
   fill: currentColor;
 }
+
 .header h1 {
   margin: 0;
-  font-size: 14px;
-  font-weight: 680;
+  font-size: 13px;
+  font-weight: 690;
   letter-spacing: -0.2px;
 }
+
 .header p {
   margin: 3px 0 0;
-  color: #777987;
-  font-size: 11px;
-}
-.localTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-left: auto;
-  color: #6d6f7b;
+  color: #817d8d;
   font-size: 10px;
 }
+
+.localTag {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  border: 1px solid #e9eee9;
+  border-radius: 7px;
+  padding: 0 7px;
+  color: #567761;
+  background: #f6faf7;
+  font-size: 9px;
+  font-weight: 600;
+}
+
 .localTag span {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #39a778;
+  background: #4aa078;
 }
 
 .intro {
-  margin: 35px 0 23px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 13px;
+  border: 1px solid #e9e7ef;
+  border-radius: 15px;
+  padding: 22px 20px 20px;
+  background: #fff;
 }
+
+.intro::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  background: #6046c7;
+  content: '';
+}
+
 .eyebrow {
-  color: #777987;
+  color: #7463b9;
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 1.1px;
+  letter-spacing: 0.9px;
 }
+
 .intro h2 {
-  max-width: 270px;
-  margin: 9px 0 7px;
-  font-size: 23px;
-  line-height: 1.16;
-  letter-spacing: -0.7px;
-  font-weight: 650;
+  max-width: 280px;
+  margin: 11px 0 8px;
+  color: #292638;
+  font-size: 25px;
+  font-weight: 680;
+  letter-spacing: -0.8px;
+  line-height: 1.12;
+  text-wrap: balance;
 }
+
 .intro p {
-  max-width: 285px;
+  max-width: 290px;
   margin: 0;
-  color: #727481;
-  font-size: 12px;
+  color: #777382;
+  font-size: 11px;
   line-height: 1.55;
 }
 
 .primary {
-  position: relative;
   display: flex;
   width: 100%;
-  height: 48px;
+  height: 50px;
+  box-sizing: border-box;
   align-items: center;
-  gap: 9px;
-  border: 0;
-  border-radius: 9px;
+  gap: 10px;
+  margin-top: 12px;
+  border: 1px solid #6046c7;
+  border-radius: 10px;
   padding: 0 13px;
   color: #fff;
-  background: #6554c0;
+  background: #6046c7;
   font: inherit;
   font-size: 12px;
-  font-weight: 620;
+  font-weight: 640;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgb(60 45 143 / 14%);
+  box-shadow: 0 4px 10px rgb(69 47 146 / 15%);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
 }
+
 .primary:hover:not(:disabled) {
-  background: #5846b3;
+  border-color: #5039b4;
+  background: #5039b4;
 }
+
 .primary:focus-visible,
 .footer a:focus-visible {
-  outline: 3px solid #b9aff7;
+  outline: 3px solid #c7bdf1;
   outline-offset: 2px;
 }
+
 .primary:disabled {
   cursor: wait;
-  opacity: 0.78;
+  opacity: 0.72;
 }
+
 .primary svg {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
 }
+
 .primary svg path {
   stroke: currentColor;
   stroke-width: 1.5;
   stroke-linejoin: round;
 }
+
 .shortcut {
   margin-left: auto;
-  color: rgb(255 255 255 / 73%);
-  font-size: 9px;
-  font-weight: 450;
+  border: 1px solid rgb(255 255 255 / 30%);
+  border-radius: 5px;
+  padding: 3px 5px;
+  color: rgb(255 255 255 / 84%);
+  background: rgb(255 255 255 / 10%);
+  font:
+    9px ui-sans-serif,
+    system-ui,
+    sans-serif;
 }
-.error {
-  margin: 10px 0 0;
-  border-radius: 7px;
-  padding: 8px 9px;
-  color: #9e3b46;
-  background: #fff2f1;
-  font-size: 11px;
-  line-height: 1.4;
-}
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 27px;
-  border-top: 1px solid #eeedf1;
-  padding-top: 14px;
-  color: #858691;
+
+.hint {
+  margin: 9px 3px 0;
+  color: #817d8d;
   font-size: 10px;
 }
+
+.error {
+  margin: 11px 0 0;
+  border: 1px solid #f0d1d2;
+  border-radius: 8px;
+  padding: 9px 10px;
+  color: #963d47;
+  background: #fff4f3;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  margin-top: 19px;
+  border: 1px solid #e9e7ef;
+  border-radius: 12px;
+  padding: 11px;
+  background: #fff;
+}
+
+.privacyNote {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.lockMark {
+  display: grid;
+  flex: 0 0 29px;
+  width: 29px;
+  height: 29px;
+  place-items: center;
+  border-radius: 8px;
+  color: #587c69;
+  background: #eff5f1;
+}
+
+.lockMark svg {
+  width: 17px;
+  height: 17px;
+}
+
+.lockMark path,
+.lockMark rect {
+  stroke: currentColor;
+  stroke-width: 1.4;
+}
+
+.lockMark circle {
+  fill: currentColor;
+}
+
+.privacyNote > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.privacyNote strong {
+  color: #514e5d;
+  font-size: 10px;
+  font-weight: 640;
+}
+
+.privacyNote small {
+  color: #85818f;
+  font-size: 9px;
+}
+
 .footer a {
-  color: #5b4ab6;
-  font-weight: 600;
+  flex: 0 0 auto;
+  color: #5b46b8;
+  font-size: 10px;
+  font-weight: 650;
   text-decoration: none;
 }
+
 .footer a:hover {
   text-decoration: underline;
 }
@@ -177,6 +299,6 @@
   *,
   *::before,
   *::after {
-    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
