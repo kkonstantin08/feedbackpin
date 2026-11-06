@@ -37,3 +37,11 @@ What this change does: The dashboard now presents reports as a compact inbox wit
 Looks good. Ship. The change reuses the existing React page and CSS Modules, adds no dependencies, and retains the current data flow. Focused tests verify visible Open/Resolved labels; remote run `42182300358` passed lint, typecheck, all 35 unit tests, six loaded-extension E2E cases, and production build. The 390 px screenshot was inspected and has no horizontal overflow.
 
 Not checked: Resource use on the user's laptop; hosted-runner process totals are not a laptop measurement.
+
+## Supplied-reference UI follow-up — 2026-11-06 — `db109f8` / `b727787`
+
+What this change does: The dashboard and popup adopt the supplied light SaaS visual direction while preserving the existing report flows. The screenshot assets and verification notes were refreshed in the docs-only follow-up.
+
+Looks good. Ship. No concrete correctness, privacy, accessibility-source, load, test-coverage, dependency, or unnecessary-code issue was found in this UI scope. The work reuses the existing React pages and CSS Modules, adds no dependencies, leaves the selector and service worker untouched, and keeps legacy image display. Remote Actions run [42194513016](https://github.com/kkonstantin08/feedbackpin/actions/runs/42194513016) is successful for source commit `db109f8`; this auditor inspected the checked-in screenshots but did not rerun checks or inspect CI step logs.
+
+Not checked: Manual keyboard/screen-reader interaction, local Chrome behavior, user's laptop performance, and a CI run on docs-only commit `b727787`.

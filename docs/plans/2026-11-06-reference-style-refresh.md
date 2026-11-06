@@ -20,4 +20,4 @@ The user supplied a white SaaS settings interface as the visual reference on 202
 - [x] Run unit tests, lint, strict typecheck, and production build locally; do not launch a local browser.
 - [x] Run loaded-extension E2E and create real popup, 390 px, and 1440 px screenshots only in GitHub Actions. Inspect those artifacts and update README screenshots.
 - [x] Update `docs/performance.md` bundle sizes from the resulting production build. Existing remote runtime measurements remain applicable because this change contains no page runtime or background code.
-- [ ] Record final visual review evidence in `docs/tdd/reference-style-refresh.md` and complete an independent GPT-6 Luna High follow-up audit before publishing `main`.
+- [x] Record final visual review evidence in `docs/tdd/reference-style-refresh.md` and complete an independent GPT-6 Luna High follow-up audit before publishing `main`.
