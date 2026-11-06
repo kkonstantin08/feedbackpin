@@ -32,21 +32,23 @@ The 35-second performance sample uses Playwright, which observes a service-worke
 
 ## Production artifact sizes
 
-Measured by `npm run build` on 2026-11-06:
+Measured by `npm run build` in [CI run `42194513016`](https://github.com/kkonstantin08/feedbackpin/actions/runs/42194513016), commit `db109f8`, on 2026-11-06:
 
 | Artifact             |       Raw |     Gzip |
 | -------------------- | --------: | -------: |
 | On-demand selector   |   6.77 kB |  2.81 kB |
 | Service worker       |   1.57 kB |  0.80 kB |
 | Popup JavaScript     |   2.99 kB |  1.28 kB |
-| Dashboard JavaScript |  11.15 kB |  3.39 kB |
-| Shared React runtime | 219.40 kB | 68.53 kB |
-| Popup CSS            |   3.95 kB |  1.35 kB |
-| Dashboard CSS        |  14.13 kB |  3.56 kB |
+| Dashboard JavaScript |  11.09 kB |  3.34 kB |
+| Shared React runtime | 219.44 kB | 68.54 kB |
+| Popup CSS            |   3.68 kB |  1.26 kB |
+| Dashboard CSS        |  14.06 kB |  3.41 kB |
 
 React is loaded by the extension popup and dashboard. The page selector remains a standalone 6.77 kB script with no runtime module imports. `npm run check:build` checks the production MV3 manifest has only `activeTab` and `scripting`, no host permissions, no optional permissions, and no registered `content_scripts`.
 
 ## Reproduction and limits
+
+The supplied-reference UI refresh at `db109f8` passed lint, strict typecheck, 35 unit tests, six loaded-extension E2E scenarios, the worker idle-shutdown assertion, and production build in run `42194513016`. Its real popup, 390 px, and 1440 px screenshots were downloaded from that run and visually inspected. No content-script, storage, or worker logic changed in this refresh; the numerical runtime table above remains explicitly tied to the earlier measured revision.
 
 The performance experiment is part of the loaded-extension Playwright suite and runs only on GitHub Actions. The recorded command is `xvfb-run --auto-servernum npm run test:e2e`; run `42182300358` also passed lint, strict typecheck, all 35 unit tests, all six E2E scenarios, and production build. The CI workflow uploads raw measurements with a 14-day retention. No browser or Playwright process was launched on the user's laptop.
 
